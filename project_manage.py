@@ -1,5 +1,5 @@
 # import database module
-
+import database
 # start by adding the admin related code
 
 # create an object to read an input csv file, persons.csv
@@ -18,7 +18,7 @@
 # role
 
 # a person_id is the same as that in the 'persons' table
-# let a username be a person's fisrt name followed by a dot and the first letter of that person's last name
+# let a username be a person's first name followed by a dot and the first letter of that person's last name
 # let a password be a random four digits string
 # let the initial role of all the students be Member
 # let the initial role of all the faculties be Faculty
