@@ -1,31 +1,25 @@
-# try wrapping the code below that reads a persons.csv file in a class and make it more general such that it can read in any csv file
-
 import csv
 import os
 import copy
 
-class Read_CSV:
+# try wrapping the code below that reads a persons.csv file in a class and make it more general such that it can read in any csv file
+class ReadCSV:
     def __init__(self, filename) -> None:
-        self._list = []
+        self.__person = []
         self.__location__ = os.path.realpath(os.path.join(os.getcwd(), os.path.dirname(__file__)))
         with open(os.path.join(self.__location__, filename + '.csv')) as f:
             rows = csv.DictReader(f)
             for r in rows:
-                self._list.append(dict(r))
+                self.__person.append(dict(r))
+        # print(self.__person)
 
     @property
-    def get_list(self):
-        return self._list
+    def fetch(self):
+        return self.__person
+    
+    def __str__(self) -> str:
+        return str(self.__person)
 
-# __location__ = os.path.realpath(
-#     os.path.join(os.getcwd(), os.path.dirname(__file__)))
-
-# persons = []
-# with open(os.path.join(__location__, 'persons.csv')) as f:
-#     rows = csv.DictReader(f)
-#     for r in rows:
-#         persons.append(dict(r))
-# print(persons)
 
 # add in code for a Database class
 class DB:
@@ -40,6 +34,8 @@ class DB:
             if table.table_name == table_name:
                 return table
         return None
+
+
 # add in code for a Table class
 class Table:
     def __init__(self, table_name, table):
@@ -65,7 +61,7 @@ class Table:
         return filtered_table
 
     def __is_float(self, element):
-        if element is None: 
+        if element is None:
             return False
         try:
             float(element)
@@ -81,7 +77,7 @@ class Table:
             else:
                 temps.append(item1[aggregation_key])
         return function(temps)
-    
+
     def select(self, attributes_list):
         temps = []
         for item1 in self.table:
@@ -92,7 +88,11 @@ class Table:
             temps.append(dict_temp)
         return temps
 
+    def insert(self, item):
+        self.table.append(item)
+    
     def __str__(self):
         return self.table_name + ':' + str(self.table)
 
-# modify the code in the Table class so that it supports the insert operation where an entry can be added to a list of dictionary
+# modify the code in the Table class so that it supports the insert operation 
+# where an entry can be added to a list of dictionary
