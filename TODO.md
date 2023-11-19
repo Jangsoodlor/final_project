@@ -1,5 +1,18 @@
 # To-Do Lists
-- "Create" Database and Table classes
-- Modify the table class so that it supports the insert operation where an entry can be added to a list of dictionary
-- Modify the code to read any file with .CSV
-- Write the main part
+Since this is an OOP program, I intend for each type of person to be its own "class" in this program.
+
+## An admin
+- Find a way for him to log himself in before the login database containing his credentials is created
+- Make him the only person to access database and the login table, by implementing some codes in the main part.
+
+## The project
+The projects shall be store as a **Table in the Database**. Each project shall be a dictionary with the following keys
+
+- Project name (str)
+- A Project Leader (str)
+- Members (list of str)
+- An Advisor (str)
+- The proposal's content (str)
+- Status (approved/denied)
+
+Each of the person class can interact with only specific keys as outlined in the document.
