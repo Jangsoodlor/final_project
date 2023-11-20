@@ -1,16 +1,18 @@
 # BEGIN part 1
-
+import random
+import database
 # import database module
 
 # define a funcion called initializing
 
 def initializing():
     persons_read = database.ReadCSV('persons').fetch
-    self.__persons = database.Table('persons', persons_read)
-    self.__db = database.DB()
-    self.__db.insert(self.__persons)
-    self.__credentials = database.Table('credentials', [])
-    for i in self.__persons.table:
+    persons = database.Table('persons', persons_read)
+    global db
+    db = database.DB()
+    db.insert(persons)
+    credentials = database.Table('credentials', [])
+    for i in persons.table:
         temp_dict = {}
         temp_dict['person_id'] = i['ID']
         temp_dict['username'] = i['fist'] + '.' + i['last'][0]
@@ -19,9 +21,9 @@ def initializing():
             temp_dict['role'] = 'Member'
         elif i['type'] == 'faculty':
             temp_dict['role'] = 'Faculty'
-        self.__credentials.insert(temp_dict)
-        self.__db.insert(self.__credentials)
-        print(self.__db.search('credentials'))
+        credentials.insert(temp_dict)
+        db.insert(credentials)
+        print(db.search('credentials'))
 
 # here are things to do in this function:
 
@@ -55,15 +57,15 @@ def initializing():
 
 # define a funcion called login
 
-    def login(self):
-        username = input('username: ')
-        password = input('password: ')
-        user = self.__credentials.filter(lambda x: x['username'] == username 
-                and x['password'] == password).select(['person_id', 'role'])
-        if user != []:
-            return(user)
-        else:
-            return(None)
+def login():
+    username = input('username: ')
+    password = input('password: ')
+    user = db.search('credentials').filter(lambda x: x['username'] == username 
+            and x['password'] == password).select(['person_id', 'role'])
+    if user != []:
+        return(user)
+    else:
+        return(None)
 
 # here are things to do in this function:
    # add code that performs a login task
@@ -74,6 +76,7 @@ def initializing():
 
 initializing()
 val = login()
+print(val)
 
 # END part 1
 
