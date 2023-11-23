@@ -5,20 +5,19 @@ import copy
 # try wrapping the code below that reads a persons.csv file in a class and make it more general such that it can read in any csv file
 class ReadCSV:
     def __init__(self, filename) -> None:
-        self.__person = []
+        self.__list = []
         self.__location__ = os.path.realpath(os.path.join(os.getcwd(), os.path.dirname(__file__)))
         with open(os.path.join(self.__location__, filename + '.csv')) as f:
             rows = csv.DictReader(f)
             for r in rows:
-                self.__person.append(dict(r))
-        # print(self.__person)
+                self.__list.append(dict(r))
 
     @property
     def fetch(self):
-        return self.__person
+        return self.__list
     
     def __str__(self) -> str:
-        return str(self.__person)
+        return str(self.__list)
 
 
 # add in code for a Database class
@@ -88,12 +87,22 @@ class Table:
             temps.append(dict_temp)
         return temps
 
+# modify the code in the Table class so that it supports the insert operation where an entry can be added to a list of dictionary
     def insert(self, item):
         self.table.append(item)
     
+# modify the code in the Table class so that it supports the update operation where an entry's value associated with a key can be updated
+    def update(self, key, args, dictionary):
+        self.table[self.table.index(dictionary)][key] = args
+            
     def __str__(self):
         return self.table_name + ':' + str(self.table)
 
-# modify the code in the Table class so that it supports the insert operation where an entry can be added to a list of dictionary
 
-# modify the code in the Table class so that it supports the update operation where an entry's value associated with a key can be updated
+# test code
+if __name__ == '__main__':
+    table = Table('test', [])
+    table.insert({'name' : 'jang', 'status' : 'handsome'})
+    table.insert({'name' : 'prayuth', 'status' : 'smart'})
+    table.update('status', 'stupid', {'name' : 'prayuth', 'status' : 'smart'})
+    print(table)

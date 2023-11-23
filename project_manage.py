@@ -1,29 +1,23 @@
 # BEGIN part 1
-import random
 import database
+import os
 # import database module
 
 # define a funcion called initializing
 
 def initializing():
-    persons_read = database.ReadCSV('persons').fetch
-    persons = database.Table('persons', persons_read)
-    global db
-    db = database.DB()
-    db.insert(persons)
-    credentials = database.Table('credentials', [])
-    for i in persons.table:
-        temp_dict = {}
-        temp_dict['person_id'] = i['ID']
-        temp_dict['username'] = i['fist'] + '.' + i['last'][0]
-        temp_dict['password'] = ''.join([str((random.randrange(0, 10))) for _ in range(4)])
-        if i['type'] == 'student':
-            temp_dict['role'] = 'Member'
-        elif i['type'] == 'faculty':
-            temp_dict['role'] = 'Faculty'
-        credentials.insert(temp_dict)
-        db.insert(credentials)
-        print(db.search('credentials'))
+    global DB
+    DB = database.DB()
+    for file in os.listdir():
+        if file.endswith('.csv'):
+            filename = ''.join(list(file)[:-4])
+            content = database.ReadCSV(filename).fetch
+            table = database.Table(filename, content)
+            DB.insert(table)
+    print(DB.search('login'))
+    print()
+    print(DB.search('persons').table[0])
+
 
 # here are things to do in this function:
 
@@ -41,8 +35,8 @@ def initializing():
 def login():
     username = input('username: ')
     password = input('password: ')
-    user = db.search('credentials').filter(lambda x: x['username'] == username 
-            and x['password'] == password).select(['person_id', 'role'])
+    user = DB.search('login').filter(lambda x: x['username'] == username 
+            and x['password'] == password).select(['ID', 'role'])
     if user != []:
         return(user)
     else:
@@ -55,7 +49,14 @@ def login():
 
 # define a function called exit
 def exit():
-    pass
+    import csv
+    for table in DB.database:
+        myFile = open(table.table_name + '.csv', 'w', newline = '')
+        writer = csv.writer(myFile)
+        writer.writerow([key for key in table.table[0]])
+        for dictionary in table.table:
+            writer.writerow(dictionary.values())
+        myFile.close()
 
 # here are things to do in this function:
    # write out all the tables that have been modified to the corresponding csv files
