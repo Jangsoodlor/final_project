@@ -74,9 +74,10 @@ Initially, there're three types of people based on the csv files provided by T.P
 - See details of all projects by printing projects out from the **Project** table.
 
 ### Advisor
-- Can Final-Approve the project
+- Can Approve the project for the evaluation.
+  - Modify the **Project** table.
 
-### __<u>All faculty members, regardless of being the advisor or not, must gather together and evaluate the project before final approval by the advisor</u>__.
+### __<u>All faculty members, regardless of being the advisor or not, must gather together and evaluate the project after the advisor approved</u>__.
 More info will be provided in [proposal.md](proposal.md)
 
 ### Admin
