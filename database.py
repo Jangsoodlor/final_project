@@ -92,8 +92,8 @@ class Table:
         self.table.append(item)
     
 # modify the code in the Table class so that it supports the update operation where an entry's value associated with a key can be updated
-    def update(self, key, args, dictionary):
-        self.table[self.table.index(dictionary)][key] = args
+    def update(self, key, val, dictionary):
+        self.table[self.table.index(dictionary)][key] = val
             
     def __str__(self):
         return self.table_name + ':' + str(self.table)
@@ -101,8 +101,12 @@ class Table:
 
 # test code
 if __name__ == '__main__':
-    table = Table('test', [])
-    table.insert({'name' : 'jang', 'status' : 'handsome'})
-    table.insert({'name' : 'prayuth', 'status' : 'smart'})
-    table.update('status', 'stupid', {'name' : 'prayuth', 'status' : 'smart'})
-    print(table)
+    # table = Table('test', [])
+    # table.insert({'name' : 'jang', 'status' : 'handsome'})
+    # table.insert({'name' : 'prayuth', 'status' : 'smart'})
+    # print(table)
+    # table.update('status', 'stupid', {'name' : 'prayuth', 'status' : 'smart'})
+    # print(table)
+    csv = ReadCSV('persons')
+    table2 = Table('csv', csv)
+    print(table2)

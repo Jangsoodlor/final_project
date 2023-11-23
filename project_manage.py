@@ -16,7 +16,8 @@ def initializing():
             DB.insert(table)
     print(DB.search('login'))
     print()
-    print(DB.search('persons').table[0])
+    print(DB.search('persons'))
+    print(DB.search('project'))
 
 
 # here are things to do in this function:
@@ -77,18 +78,18 @@ print(val)
 
 # based on the return value for login, activate the code that performs activities according to the role defined for that person_id
 
-# if val[1] = 'admin':
-    # see and do admin related activities
-# elif val[1] = 'student':
-    # see and do student related activities
-# elif val[1] = 'member':
-    # see and do member related activities
-# elif val[1] = 'lead':
-    # see and do lead related activities
-# elif val[1] = 'faculty':
-    # see and do faculty related activities
-# elif val[1] = 'advisor':
-    # see and do advisor related activities
+# if val[1] == 'admin':
+#     pass
+# elif val[1] == 'student':
+#     print('Options')
+# elif val[1] == 'member':
+#     pass
+# elif val[1] == 'lead':
+#     print('Options')
+# elif val[1] == 'faculty':
+#     pass
+# elif val[1] == 'advisor':
+#     pass
 
 # once everyhthing is done, make a call to the exit function
 exit()
