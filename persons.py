@@ -6,7 +6,9 @@ class Leader:
             self.project = {}
             self.project_id = None
         else:
-            self.project = project[0]
+            for i in project_table.table:
+                if i['Lead'] == self.id:
+                    self.project = i
             self.project_id = self.project['ProjectID']
 
     def create_project(self, title, project_table):
@@ -19,12 +21,13 @@ class Leader:
         self.project['Status'] = 'Pending'
         project_table.insert(self.project)
 
-    def request(self, login_table, request_table, role):
+    def request(self, people_table, request_table, role):
         """_summary_
 
         This function is for sending request to both member and advisor.
+        people_table : login.join(person, 'ID')
         """
-        people = login_table.filter(lambda x: x['role'] == role).select(['ID', 'fist', 'last'])
+        people = people_table.filter(lambda x: x['role'] == role).select(['ID', 'fist', 'last'])
         print('Available '+ role)
         for i in people:
             print(i)
@@ -44,11 +47,24 @@ class Leader:
 
     def request_status(self, request_table, role):
         print(f'Status for {role} recruitment: ')
-        for i in request_table.filter(lambda x: x['ProjectID'] == self.project_id):
+        for i in request_table.filter(lambda x: x['ProjectID'] == self.project_id).table:
             print(i)
             
     def __str__(self) -> str:
-        return f'ID: {self.id}, Project:{self.project}, Project ID:{self.project_id}'
+        return f'ID: {self.id}, Project:{self.project}'
+    
+
+class Student:
+    def __init__(self, id, request_table) -> None:
+        self.id = id
+        # Show requests, rewritten soon.
+        for i in request_table.filter(lambda x: x['to_be_member'] == self.id).table:
+            print(i)
+    
+    def become_leader(self, login_table):
+        login_table.update('ID', self.id, 'role', 'leader')
+        
+
 # the code below is for testing purposes
 if __name__ == '__main__':
     import database as dp
@@ -62,7 +78,11 @@ if __name__ == '__main__':
     leader.create_project('Magic wand', project)
     print(leader)
     print(project)
-    leader.request(login.join(person, 'ID'), request, 'faculty')
+    leader.request(login.join(person, 'ID'), request, 'student')
     print(request)
-    # login2 = login.join(person, 'ID')
-    # print(login2)
+    print(leader.request_status(request, 'student'))
+    
+    student = Student('9898118', request)
+    # student.become_leader(login)
+    # print(login.filter(lambda x: x['role'] == 'leader'))
+    
