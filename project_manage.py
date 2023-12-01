@@ -84,7 +84,7 @@ print(val)
 #     print('Options')
 # elif val[1] == 'member':
 #     pass
-# elif val[1] == 'lead':
+# elif val[1] == 'leader':
 #     pass
 # elif val[1] == 'faculty':
 #     pass
