@@ -1,7 +1,7 @@
 class Leader:
     def __init__(self, id, project_table) -> None:
-        self.leader_id = id
-        project = project_table.filter(lambda x: x['Lead'] == self.leader_id).table
+        self.id = id
+        project = project_table.filter(lambda x: x['Lead'] == self.id).table
         if project == []:
             self.project = {}
             self.project_id = None
@@ -13,21 +13,25 @@ class Leader:
         self.project_id = str(len(project_table.table) + 1)
         self.project['ProjectID'] = self.project_id
         self.project['Title'] = title
-        self.project['Lead'] = self.leader_id
+        self.project['Lead'] = self.id
         self.project['Member1'] = None
         self.project['Member2'] = None
         self.project['Status'] = 'Pending'
         project_table.insert(self.project)
 
-    def request(self, login_table, table_to_append, role):
+    def request(self, login_table, request_table, role):
+        """_summary_
+
+        This function is for sending request to both member and advisor.
+        """
         people = login_table.filter(lambda x: x['role'] == role).select(['ID', 'fist', 'last'])
         print('Available '+ role)
         for i in people:
             print(i)
         recruit_list = []
         while True:
-            recruit = input('Type the ID of who do you want to request, or type exit to exit')
-            if recruit == 'exit'.lower():
+            recruit = input('Type the ID of the person you want to request, or press ENTER to exit: ')
+            if recruit == '':
                 break
             recruit_list.append(recruit)
         for i in recruit_list:
@@ -36,9 +40,29 @@ class Leader:
             temp_dict['to_be_member'] = i
             temp_dict['Response'] = None
             temp_dict['Response_date'] = None
-            table_to_append.insert(temp_dict)
+            request_table.insert(temp_dict)
 
     def request_status(self, request_table, role):
         print(f'Status for {role} recruitment: ')
         for i in request_table.filter(lambda x: x['ProjectID'] == self.project_id):
             print(i)
+            
+    def __str__(self) -> str:
+        return f'ID: {self.id}, Project:{self.project}, Project ID:{self.project_id}'
+# the code below is for testing purposes
+if __name__ == '__main__':
+    import database as dp
+    project = dp.Table('project', [])
+    login = dp.Table('login', dp.ReadCSV('login').fetch)
+    person = dp.Table('login', dp.ReadCSV('persons').fetch)
+    request = dp.Table('request', [])
+    
+    leader = Leader('2567260', project)
+    print(leader)
+    leader.create_project('Magic wand', project)
+    print(leader)
+    print(project)
+    leader.request(login.join(person, 'ID'), request, 'faculty')
+    print(request)
+    # login2 = login.join(person, 'ID')
+    # print(login2)
