@@ -78,14 +78,17 @@ print(val)
 
 # based on the return value for login, activate the code that performs activities according to the role defined for that person_id
 
-# if val[1] == 'admin':
-#     pass
-# elif val[1] == 'student':
-#     print('Options')
-# elif val[1] == 'member':
-#     pass
-# elif val[1] == 'lead':
-#     print('Options')
+if val[1] == 'admin':
+    pass
+elif val[1] == 'student':
+    print('Options')
+elif val[1] == 'member':
+    pass
+elif val[1] == 'lead':
+    print('Options')
+    print('1. Create Project')
+    option = int(input('Enter option ehre: '))
+    
 # elif val[1] == 'faculty':
 #     pass
 # elif val[1] == 'advisor':
