@@ -5,36 +5,36 @@ There shall be 5 tables with the following attributes
 
 **Persons**
 - ID
-- First
-- Last
-- Type
+- first
+- last
+- type
 
 **Login**
 - ID
-- Username
-- Password
-- Role
+- username
+- password
+- role
 
 **Project**
 - ProjectID
-- Title
-- Lead
-- Member1
-- Member2
-- Advisor
-- Status
+- title
+- lead
+- member1
+- member2
+- advisor
+- status
 
 **Member_pending_request**
 - ProjectID
 - to_be_member
-- Response
-- Response_date
+- response
+- response_date
 
 **Advisor_pending_request**
 - ProjectID
 - to_be_advisor
-- Response
-- Response_date
+- response
+- response_date
 
 ## What each type of person can do
 Initially, there're three types of people based on the csv files provided by T.Paruj; Admin, Faculty and Student. But the program will be able to assign new roles to these people. The person types outlined in the following section will be written as its own class in the [persons.py](persons.py) file.
@@ -51,7 +51,7 @@ Initially, there're three types of people based on the csv files provided by T.P
   ```py
   projectID = len(project_table.table)
   ```
-  - more features will be explained in the Leader section.
+  - more features will be explained in the leader section.
 
 ## Leader
 - See project and requests status by pulling the corresponding dictionaries from **Project**, **Member_pending_request** and **Advisor_pending_request** tables.
