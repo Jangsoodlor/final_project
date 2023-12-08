@@ -1,6 +1,9 @@
 class Request:
+    """_summary_
+    This class do everything which relates to doing requests
+    """
     def __init__(self, request_table) -> None:
-        self.request_table = table
+        self.request_table = request_table
 
     def request(self, project_id, people_table, role):
         """_summary_
@@ -51,6 +54,9 @@ class Request:
 
 
 class Project:
+    """_summary_
+    This class does everything related to project manipulatoni
+    """
     def __init__(self, project_table) -> None:
         self.__project_table = project_table
     
@@ -75,9 +81,10 @@ class Project:
         project_dict[key] = args
     
 
-# class Leader:
-#     def __init__(self, id, project_table) -> None:
-#         self.__id = id
+class Leader:
+    pass
+    # def __init__(self, id, project_table) -> None:
+        # self.__id = id
         # project = project_table.filter(lambda x: x['lead'] == self.id).table
         # if project == []:
         #     self.project = {}
@@ -88,9 +95,9 @@ class Project:
         #             self.project = i
         #     self.project_id = self.project['ProjectID']
 
-    @property
-    def id(self):
-        return self.__id
+    # @property
+    # def id(self):
+    #     return self.__id
     
     # def create_project(self, title, project_table):
     #     self.project_id = str(len(project_table.table) + 1)
