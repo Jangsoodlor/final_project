@@ -3,7 +3,7 @@ class Request:
     This class do everything which relates to doing requests
     """
     def __init__(self, request_table) -> None:
-        self.request_table = request_table
+        self.__request_table = request_table
 
     def request(self, project_id, people_table, role):
         """_summary_
@@ -27,15 +27,15 @@ class Request:
             temp_dict['to_be_member'] = i
             temp_dict['response'] = None
             temp_dict['response_date'] = None
-            self.request_table.insert(temp_dict)
+            self.__request_table.insert(temp_dict)
 
     def status(self, project_id, role):
         print(f'status for {role} recruitment: ')
-        for i in self.request_table.filter(lambda x: x['ProjectID'] == project_id).table:
+        for i in self.__request_table.filter(lambda x: x['ProjectID'] == project_id).table:
             print(i)
 
     def view(self, person_id):
-        for i in self.request_table.filter(lambda x: x['to_be_member'] == person_id and x['response'] == None).table:
+        for i in self.__request_table.filter(lambda x: x['to_be_member'] == person_id and x['response'] == None).table:
             print(i)
 
     def decide(self, person_id, login_table, role, decision):
@@ -43,14 +43,14 @@ class Request:
         #TODO change True-False to Y-N. This is to reduce the lines needed for the Main class in the future.
         if decision == True:
             import datetime
-            self.request_table.update('to_be_member', person_id, 'response', 'Accepted')
+            self.__request_table.update('to_be_member', person_id, 'response', 'Accepted')
             login_table.update('ID', person_id, 'role', role)
         else:
-            self.request_table.update('to_be_member', person_id, 'response', 'Rejected')
-        self.request_table.update('to_be_member', person_id, 'response_date', datetime.datetime.now())
+            self.__request_table.update('to_be_member', person_id, 'response', 'Rejected')
+        self.__request_table.update('to_be_member', person_id, 'response_date', datetime.datetime.now())
     
     def __str__(self) -> str:
-        return str(self.request_table)
+        return str(self.__request_table)
 
 
 class Project:
@@ -80,38 +80,9 @@ class Project:
             self.update(self, project_id, args, 'member2')
         project_dict[key] = args
     
-
-class Leader:
-    pass
-    # def __init__(self, id, project_table) -> None:
-        # self.__id = id
-        # project = project_table.filter(lambda x: x['lead'] == self.id).table
-        # if project == []:
-        #     self.project = {}
-        #     self.project_id = None
-        # else:
-        #     for i in project_table.table:
-        #         if i['lead'] == self.__id:
-        #             self.project = i
-        #     self.project_id = self.project['ProjectID']
-
-    # @property
-    # def id(self):
-    #     return self.__id
-    
-    # def create_project(self, title, project_table):
-    #     self.project_id = str(len(project_table.table) + 1)
-    #     self.project['ProjectID'] = self.project_id
-    #     self.project['title'] = title
-    #     self.project['leader'] = self.__id
-    #     self.project['member1'] = None
-    #     self.project['member2'] = None
-    #     self.project['status'] = 'Pending'
-    #     project_table.insert(self.project)
-
-    # def __str__(self) -> str:
-    #     return f'ID: {self.__id}, Project:{self.project}'
-
+class Main:
+    def __init__(self) -> None:
+        pass
 
 class Student:
     def __init__(self, id) -> None:
@@ -135,22 +106,22 @@ if __name__ == '__main__':
     member_request = Request(dp.Table('member_request', []))
     advisor_request = Request(dp.Table('advisor_request', []))
     project_table = Project(dp.Table('Project', []))
-    
-    leader = Leader('2567260', project)
-    print(leader)
+        
+    member_request.view('5086282')
+
+    # leader = Leader('2567260', project)
+    # print(leader)
     # leader.create_project('Magic wand', project)
-    print(leader)
-    print(project)
-    member_request.request('1', login.join(person, 'ID'), 'student')
-    print()
-    print(member_request.status('1', 'member'))
+    # print(leader)
+    # print(project)
+    # member_request.request('1', login.join(person, 'ID'), 'student')
+    # print()
+    # print(member_request.status('1', 'member'))
     # advisor_request.request('1', login.join(person, 'ID'), 'faculty')
     # print()
     # print(advisor_request.status('1', 'advisor'))
 
-    student = Student('5086282')
-    member_request.view('5086282')
-
+    # student = Student('5086282')
 
 
 

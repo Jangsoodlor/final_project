@@ -8,16 +8,17 @@ import os
 def initializing():
     global DB
     DB = database.DB()
-    for file in os.listdir():
+    for file in os.listdir('database'):
         if file.endswith('.csv'):
-            filename = ''.join(list(file)[:-4])
-            content = database.ReadCSV(filename).fetch
-            table = database.Table(filename, content)
+            content = database.ReadCSV(os.path.join('database', file)).fetch
+            table = database.Table(''.join(list(file)[:-4]), content)
             DB.insert(table)
-    print(DB.search('login'))
-    print()
+    # print(DB.search('login'))
+    # print()
+    # DB.search('persons').insert({'ID': '0001', 'first': 'Arma', 'last': 'Agong', 'type': 'Yaaaaa'})
     print(DB.search('persons'))
-    print(DB.search('project'))
+    # print(type(DB.search('persons')))
+    # print(DB.search('persons').table)
 
 
 # here are things to do in this function:
@@ -52,12 +53,14 @@ def login():
 def exit():
     import csv
     for table in DB.database:
-        myFile = open(table.table_name + '.csv', 'w', newline = '')
-        writer = csv.writer(myFile)
-        writer.writerow([key for key in table.table[0]])
-        for dictionary in table.table:
-            writer.writerow(dictionary.values())
-        myFile.close()
+        if len(table.table) != 0:
+            myFile = open(os.path.join(os.path.join(os.getcwd(), 'database'),
+                                       table.table_name + '.csv'), 'w', newline = '')
+            writer = csv.writer(myFile)
+            writer.writerow([key for key in table.table[0]])
+            for dictionary in table.table:
+                writer.writerow(dictionary.values())
+            myFile.close()
 
 # here are things to do in this function:
    # write out all the tables that have been modified to the corresponding csv files

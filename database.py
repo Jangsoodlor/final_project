@@ -7,7 +7,7 @@ class ReadCSV:
     def __init__(self, filename) -> None:
         self.__list = []
         self.__location__ = os.path.realpath(os.path.join(os.getcwd(), os.path.dirname(__file__)))
-        with open(os.path.join(self.__location__, filename + '.csv')) as f:
+        with open(os.path.join(self.__location__, filename)) as f:
             rows = csv.DictReader(f)
             for r in rows:
                 self.__list.append(dict(r))
@@ -44,6 +44,10 @@ class Table:
     @property
     def table(self):
         return self.__table
+    
+    @property
+    def table_name(self):
+        return self.__table_name
 
     def join(self, other_table, common_key):
         joined_table = Table(self.__table_name + '_joins_' + other_table.table_name, [])
