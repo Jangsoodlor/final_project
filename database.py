@@ -5,6 +5,7 @@ import copy
 # try wrapping the code below that reads a persons.csv file in a class and make it more general such that it can read in any csv file
 class ReadCSV:
     def __init__(self, filename) -> None:
+        #TODO somehow manage to join the "database" path here instead of from other modules
         self.__list = []
         self.__location__ = os.path.realpath(os.path.join(os.getcwd(), os.path.dirname(__file__)))
         with open(os.path.join(self.__location__, filename)) as f:
