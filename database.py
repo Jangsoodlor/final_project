@@ -38,12 +38,16 @@ class DB:
 # add in code for a Table class
 class Table:
     def __init__(self, table_name, table):
-        self.table_name = table_name
-        self.table = table
+        self.__table_name = table_name
+        self.__table = table
+    
+    @property
+    def table(self):
+        return self.__table
 
     def join(self, other_table, common_key):
-        joined_table = Table(self.table_name + '_joins_' + other_table.table_name, [])
-        for item1 in self.table:
+        joined_table = Table(self.__table_name + '_joins_' + other_table.table_name, [])
+        for item1 in self.__table:
             for item2 in other_table.table:
                 if item1[common_key] == item2[common_key]:
                     dict1 = copy.deepcopy(item1)
@@ -53,8 +57,8 @@ class Table:
         return joined_table
 
     def filter(self, condition):
-        filtered_table = Table(self.table_name + '_filtered', [])
-        for item1 in self.table:
+        filtered_table = Table(self.__table_name + '_filtered', [])
+        for item1 in self.__table:
             if condition(item1):
                 filtered_table.table.append(item1)
         return filtered_table
@@ -70,7 +74,7 @@ class Table:
 
     def aggregate(self, function, aggregation_key):
         temps = []
-        for item1 in self.table:
+        for item1 in self.__table:
             if self.__is_float(item1[aggregation_key]):
                 temps.append(float(item1[aggregation_key]))
             else:
@@ -79,7 +83,7 @@ class Table:
 
     def select(self, attributes_list):
         temps = []
-        for item1 in self.table:
+        for item1 in self.__table:
             dict_temp = {}
             for key in item1:
                 if key in attributes_list:
@@ -89,16 +93,16 @@ class Table:
 
 # modify the code in the Table class so that it supports the insert operation where an entry can be added to a list of dictionary
     def insert(self, item):
-        self.table.append(item)
+        self.__table.append(item)
     
 # modify the code in the Table class so that it supports the update operation where an entry's value associated with a key can be updated
     def update(self, key_main, val_main, key_update, val_update):
-        for i in self.table:
+        for i in self.__table:
             if i[key_main] == val_main:
                 i[key_update] = val_update
             
     def __str__(self):
-        return self.table_name + ':' + str(self.table)
+        return self.__table_name + ':' + str(self.__table)
 
 
 # test code

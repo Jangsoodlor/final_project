@@ -18,7 +18,7 @@ There shall be 5 tables with the following attributes
 **Project**
 - ProjectID
 - title
-- lead
+- leader
 - member1
 - member2
 - advisor
@@ -37,7 +37,7 @@ There shall be 5 tables with the following attributes
 - response_date
 
 ## What each type of person can do
-Initially, there're three types of people based on the csv files provided by T.Paruj; Admin, Faculty and Student. But the program will be able to assign new roles to these people. The person types outlined in the following section will be written as its own class in the [persons.py](persons.py) file.
+Initially, there're three types of people based on the csv files provided by T.Paruj; Admin, Faculty and Student. But the program will be able to assign new roles to these people. The person types outlined in the following section will be implemented as various classes in the [persons.py](persons.py) file.
 
 ## Student
 - See project member requests
