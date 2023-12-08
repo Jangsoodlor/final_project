@@ -6,13 +6,17 @@ import os
 # define a funcion called initializing
 
 def initializing():
+    #TODO find a more fancy (and less confusing) way to define DB
     global DB
     DB = database.DB()
     for file in os.listdir('database'):
         if file.endswith('.csv'):
+            #TODO IMPORTANT fix the content variable because it should send only file name
             content = database.ReadCSV(os.path.join('database', file)).fetch
             table = database.Table(''.join(list(file)[:-4]), content)
             DB.insert(table)
+            
+    # Code for testing that database ACTUALLY works.
     # print(DB.search('login'))
     # print()
     # DB.search('persons').insert({'ID': '0001', 'first': 'Arma', 'last': 'Agong', 'type': 'Yaaaaa'})
