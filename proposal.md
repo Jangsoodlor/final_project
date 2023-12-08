@@ -1,6 +1,4 @@
 # Proposal for the evaluating step
-__<u>All faculty members, regardless of being the advisor or not, must gather together and evaluate the project after the advisor approved</u>__
-
 **Steps**
 - The advisor approved the project for the evaluation
 - Change project status in project table
@@ -18,30 +16,27 @@ __<u>All faculty members, regardless of being the advisor or not, must gather to
     - Advisor
     - Status
   - These attributes are new:
-    - Evaluators (Default = `[]`). This will be a nested list. of the evaluator's name and the score he or she give. Something like
+    - Evaluators (Default = `[]`). This will be a nested list. of the evaluator's id and the score he or she give. Something like
       ```py
       {Evaluators : [['0001', 10], ['0002', 9], ['0003', 20]]}
       ```
+    - Initially, the evaluator's id and their score (aka. first and second index of each list) will be set to a NoneType.
+      ```py
+      {Evaluators : [['0001', None], ['0002', None], ['0003', None]]}
+      ```
 
+- The admin send the "evaluation requests" to 3 faculty members by appending the project to **Advisor_pending_request** table.
 
-- The admin send the "evaluation requests" to all the faculty members by appending the project to **Advisor_pending_request** table.
-
-- If <u>3 faculty members agreed</u>
-  - the other requests will be deleted from **Advisor_pending_request** table automatically.
-    ```py
-    {project['status'] : 'evaluating'}
-    ```
-    ```py
-    {Evaluators : [['0001', None], ['0002', None], ['0003', None]]}
-    ```
-- Each Evaluators can give score. This will be written as a method in 
+- If <u>some of those who are invited refused for some reason</u>, notify the admin to invite them again.
+- Each Evaluators can give score as an integer from 1 to 10. This will be written as a method in 
 - After each advisor gave scores, change the project status in both **Project_to_eval** and **Project** tables.
   ```py
   {project['status'] : 'Evaluated. waiting for final approval.'}
   ```
 
-- After the Advisor gave the final approval
-  - Change project status in both tables once again.
+- The advisor decides whether to give the final approval.
+  - If yes, Change project status in both tables once again.
     ```py
     {project['status'] : 'Finished'}
     ```
+  - If no, revert the project status to what it was before.
