@@ -8,7 +8,8 @@ class Request:
     def request(self, project_id, people_table, role):
         """_summary_
 
-        This function is for sending request to both member and advisor.
+        This function is for sending requests to both member and advisors.
+        As well as returning status of those requests.
         people_table : login.join(person, 'ID')
         """
         people = people_table.filter(lambda x: x['role'] == role).select(['ID', 'first', 'last'])
@@ -24,6 +25,7 @@ class Request:
         for i in recruit_list:
             temp_dict = {}
             temp_dict['ProjectID'] = project_id
+            # TODO find a way to also append to_be_advisor
             temp_dict['to_be_member'] = i
             temp_dict['response'] = None
             temp_dict['response_date'] = None
@@ -39,10 +41,11 @@ class Request:
             print(i)
 
     def decide(self, person_id, login_table, role, decision):
-        #TODO re-wrote it so that it somehow also update the project table.
+        #TODO MAYBE re-wrote it so that it somehow also update the project table.
         #TODO change True-False to Y-N. This is to reduce the lines needed for the Main class in the future.
         if decision == True:
             import datetime
+            # TODO IMPORTANT also implement to_be_advisor
             self.__request_table.update('to_be_member', person_id, 'response', 'Accepted')
             login_table.update('ID', person_id, 'role', role)
         else:
@@ -60,11 +63,11 @@ class Project:
     def __init__(self, project_table) -> None:
         self.__project_table = project_table
     
-    def find_project_dict(self, person_id, role):
-        return self.__project_table.filter(lambda x: x[role] == person_id).table[0]
+    def find_project_dict(self, key, args):
+        return self.__project_table.filter(lambda x: x[key] == args).table[0]
     
     def create(self, title, leader_id):
-        #TODO write AssertionError
+        #TODO write AssertionError if a leader already have a project
         temp_dict = {}
         temp_dict['ProjectID'] = str(len(self.__project_table.table) + 1)
         temp_dict['title'] = title
