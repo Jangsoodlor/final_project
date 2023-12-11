@@ -18,14 +18,26 @@ class Request(Container):
     def __init__(self, table) -> None:
         super().__init__(table)
 
-    def request(self, project_id, people_table, role):
+    @property
+    def __get_role(self):
+        if 'member' in self._table.table_name:
+            return 'member'
+        elif 'advisor' in self._table.table_name:
+            return 'advisor'
+
+    def request(self, project_id, people_table):
         """_summary_
 
         This function is for sending requests to both member and advisors.
         As well as returning status of those requests.
         people_table : login.join(person, 'ID')
         """
-        people = people_table.filter(lambda x: x['role'] == role).select(['ID', 'first', 'last'])
+        role = self.__get_role
+        if role =='advisor':
+            type = 'faculty'
+        elif role == 'member':
+            type = 'student'
+        people = people_table.filter(lambda x: x['role'] == type).select(['ID', 'first', 'last'])
         print(f'Available {role} for recruitment')
         for i in people:
             print(i)
@@ -39,36 +51,51 @@ class Request(Container):
             temp_dict = {}
             temp_dict['ProjectID'] = project_id
             # TODO find a way to also append to_be_advisor
-            temp_dict['to_be_member'] = i
+            to_be = 'to_be_' + role
+            temp_dict[to_be] = i
             temp_dict['response'] = None
             temp_dict['response_date'] = None
             self._table.insert(temp_dict)
 
-    def status(self, project_id, role):
-        print(f'status for {role} recruitment: ')
+    def status(self, project_id):
+        """_summary_
+        leader's view
+        """
         for i in self._table.filter(lambda x: x['ProjectID'] == project_id).table:
             print(i)
 
-    def view(self, person_id, to_be):
+    def view(self, person_id):
+        """_summary_
+        other ppl's view
+        """
+        to_be = 'to_be_' + self.__get_role
         for i in self._table.filter(lambda x: x[to_be] == person_id and x['response'] == None).table:
             print(i)
 
-    def decide(self, person_id, role, project_id, decision, login_table=None, project_obj=None):
-        #TODO MAYBE re-wrote it so that it somehow also update the project table.
-        #TODO change True-False to Y-N. This is to reduce the lines needed for the Main class in the future.
+    def decide(self, person_id, project_id, decision, login_table=None, project_obj=None):
+        # Ask for project_id in the main class using self.view
         import datetime
+        role = self.__get_role
         to_be = 'to_be_' + role
         if decision.lower() == 'yes':
-            import datetime
-            # TODO IMPORTANT also implement to_be_advisor
             self._table.update(to_be, person_id, 'response', 'Accepted')
             login_table.update('ID', person_id, 'role', role)
             project_obj.update(project_id, role, person_id)
+            # Automatically refused all other requests
+            for i in self._table.table:
+                if i[to_be] == person_id and i['ProjectID'] != project_id:
+                    self.decide(person_id, i['ProjectID'], 'No')
+            # Auto delete every request once the project ist full
+            project = project_obj.find_dict('ProjectID', project_id)
+            if (role == 'member' and project['member1'] != None and project['member2'] != None) or\
+                (role == 'advisor' and project[role] != None):
+                for r in self._table.table:
+                    if r['ProjectID'] == project_id and r['response'] == None:
+                        self._table.table.remove(r)
         else:
-            self._table.update('to_be_member', person_id, 'response', 'Rejected')
-        self._table.update('to_be_member', person_id, 'response_date', datetime.datetime.now())
-
-
+            self._table.update(to_be, person_id, 'response', 'Rejected')
+        self._table.update(to_be, person_id, 'response_date', datetime.datetime.now())
+        
 class Project(Container):
     """_summary_
     This class does everything related to project manipulation
@@ -84,28 +111,29 @@ class Project(Container):
         temp_dict['leader'] = leader_id
         temp_dict['member1'] = None
         temp_dict['member2'] = None
+        temp_dict['advisor'] = None
         temp_dict['status'] = 'Pending'
         self._table.insert(temp_dict)
         login_table.update('ID', leader_id, 'role', 'leader')
     
-    def __find_dict(self, key, args):
+    def find_dict(self, key, args):
         return self._table.filter(lambda x: x[key] == args).table[0]
         
     def get_id(self, key, args):
-        return self.__find_dict(key, args)['ProjectID']
+        return self.find_dict(key, args)['ProjectID']
     
     def update(self, project_id, key_update, val_update):
-        #TODO fix update procedure go boom
-        project_dict = self.__find_dict('ProjectID', project_id)
+        project_dict = self.find_dict('ProjectID', project_id)
         if key_update == 'member' and project_dict['member1'] != None:
-            key_update =='member2'
+            key_update ='member2'
         elif key_update == 'member' and project_dict['member1'] == None:
-            key_update == 'member1'
+            key_update = 'member1'
         self._table.update('ProjectID', project_id, key_update, val_update)
         
         
 # the code below is for testing purposes
 if __name__ == '__main__':
+    # __init__
     import database as dp
     import os
     project = dp.Table('project', [])
@@ -121,17 +149,30 @@ if __name__ == '__main__':
     project_table.create('Magic Wand', '2567260', login)
     print(project_table)
     print(login.filter(lambda x: x['role'] == 'leader'))
-    member_request.request(project_table.get_id('leader', '2567260'), login.join(person, 'ID'), 'student')
-    # member_request.view('5086282', 'to_be_member')
-    # member_request.view('7998314', 'to_be_member')
-    # member_request.view('4850789', 'to_be_member')
-    # member_request.status('1', 'member')
-    # print(member_request)
-    #TODO fix update procedure go boom
-    # for i in member_request.get_table.table:
-    #     print(i)
-    print(project_table)
-        
-
-
+    member_request.request(project_table.get_id('leader', '2567260'), login.join(person, 'ID'))
+    advisor_request.request(project_table.get_id('leader', '2567260'), login.join(person, 'ID'))
+    print()
     
+    # print('request views by those recrutied')
+    # member_request.view('7998314')
+    # member_request.view('1863421')
+    # member_request.view('5086282')
+    # advisor_request.view('2472659')
+    # print()
+    # print(advisor_request)
+    # print(member_request)
+    # print()
+
+    print('status viewed by leader')
+    member_request.status('1')
+    advisor_request.status('1')
+    print()
+    print('decisions')
+    member_request.decide('1863412', '1', 'yes', login, project_table)
+    member_request.decide('5086282', '1', 'yes', login, project_table)
+    advisor_request.decide('2472659', '1', 'yes', login, project_table)
+    print(project_table)
+    for i in member_request.get_table.table:
+        print(i)
+    for i in advisor_request.get_table.table:
+        print(i)

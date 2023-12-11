@@ -116,4 +116,3 @@ if __name__ == '__main__':
     table.insert({'name' : 'janos', 'status' : 'smart'})
     print(table)
     table.update('name', 'janos', 'status', 'stupid')
-    print(table)
