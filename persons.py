@@ -38,6 +38,7 @@ class Request(Container):
         elif role == 'member':
             type = 'student'
         people = people_table.filter(lambda x: x['role'] == type).select(['ID', 'first', 'last'])
+        print()
         print(f'Available {role} for recruitment')
         for i in people:
             print(i)
@@ -77,25 +78,31 @@ class Request(Container):
         import datetime
         role = self.__get_role
         to_be = 'to_be_' + role
-        if decision.lower() == 'yes':
-            self._table.update(to_be, person_id, 'response', 'Accepted')
+        for i in self._table.table:
+            if i[to_be] == person_id and i['ProjectID'] == project_id:
+                i['response'] = decision.lower().title()
+                i['response_date'] = datetime.datetime.now().strftime('%Y-%m-%d')
+        if decision.lower() == 'accepted':
+            # this line of code actually accept ALL requests lol
+            # self._table.update(to_be, person_id, 'response', 'accepted')
             login_table.update('ID', person_id, 'role', role)
             project_obj.update(project_id, role, person_id)
             # Automatically refused all other requests
+            # without this, code will go boom boom (real)
             for i in self._table.table:
                 if i[to_be] == person_id and i['ProjectID'] != project_id:
-                    self.decide(person_id, i['ProjectID'], 'No')
+                    self.decide(person_id, i['ProjectID'], 'rejected')
             # Auto delete every request once the project ist full
             project = project_obj.find_dict('ProjectID', project_id)
-            if (role == 'member' and project['member1'] != None and project['member2'] != None) or\
-                (role == 'advisor' and project[role] != None):
+            if (role == 'member' and project['member1'] != None and project['member2'] != None) \
+                or (role == 'advisor' and project[role] != None):
+                temp_list = []
                 for r in self._table.table:
                     if r['ProjectID'] == project_id and r['response'] == None:
+                        #TODO fix remove gone wrong
                         self._table.table.remove(r)
-        else:
-            self._table.update(to_be, person_id, 'response', 'Rejected')
-        self._table.update(to_be, person_id, 'response_date', datetime.datetime.now())
-        
+
+
 class Project(Container):
     """_summary_
     This class does everything related to project manipulation
@@ -147,10 +154,13 @@ if __name__ == '__main__':
     print(project_table)
 
     project_table.create('Magic Wand', '2567260', login)
+    project_table.create('Magic Eraser', '9898118', login)
     print(project_table)
     print(login.filter(lambda x: x['role'] == 'leader'))
     member_request.request(project_table.get_id('leader', '2567260'), login.join(person, 'ID'))
     advisor_request.request(project_table.get_id('leader', '2567260'), login.join(person, 'ID'))
+    # member_request.request(project_table.get_id('leader', '9898118'), login.join(person, 'ID'))
+    # advisor_request.request(project_table.get_id('leader', '9898118'), login.join(person, 'ID'))
     print()
     
     # print('request views by those recrutied')
@@ -166,13 +176,19 @@ if __name__ == '__main__':
     print('status viewed by leader')
     member_request.status('1')
     advisor_request.status('1')
+    # member_request.status('2')
+    # advisor_request.status('2')
     print()
     print('decisions')
-    member_request.decide('1863412', '1', 'yes', login, project_table)
-    member_request.decide('5086282', '1', 'yes', login, project_table)
-    advisor_request.decide('2472659', '1', 'yes', login, project_table)
-    print(project_table)
-    for i in member_request.get_table.table:
+    member_request.decide('1863412', '1', 'accepted', login, project_table)
+    member_request.decide('5086282', '1', 'accepted', login, project_table)
+    advisor_request.decide('2472659', '1', 'accepted', login, project_table)
+    # member_request.decide('4788888', '2', 'accepted', login, project_table)
+    for i in project_table.get_table.table:
         print(i)
-    for i in advisor_request.get_table.table:
-        print(i)
+    print()
+    print('After recruitment')
+    member_request.status('1')
+    advisor_request.status('1')
+    # member_request.status('2')
+    # advisor_request.status('2')
