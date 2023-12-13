@@ -36,7 +36,7 @@ class Container:
     def __str__(self) -> str:
         return str(self._table)
 
-
+#TODO make printing dicts a nice-looking table
 class Request(Container):
     """_summary_
     This class do everything which relates to doing requests and dealing with
@@ -71,14 +71,19 @@ class Request(Container):
             print(i)
         recruit_list = []
         while True:
-            recruit = input('Type the ID of the person you want to request, or press ENTER to exit: ')
-            if recruit == '':
-                break
+            try:
+                recruit = input('Type the ID of the person you want to request, or press ENTER to exit: ')
+                if recruit == '':
+                    break
+                if recruit not in [i['ID'] for i in people] :
+                    raise AssertionError
+            except AssertionError:
+                print('The person you tried does not exist. Please try again')
+                continue
             recruit_list.append(recruit)
         for i in recruit_list:
             temp_dict = {}
             temp_dict['ProjectID'] = project_id
-            # TODO find a way to also append to_be_advisor
             to_be = 'to_be_' + role
             temp_dict[to_be] = i
             temp_dict['response'] = None
@@ -87,20 +92,20 @@ class Request(Container):
 
     def status(self, project_id):
         """_summary_
-        leader's view
+        leader's and member's view
         """
         for i in self._table.filter(lambda x: x['ProjectID'] == project_id).table:
             print(i)
 
     def view(self, person_id):
         """_summary_
-        other ppl's view
+        students' and advisors' view
         """
         to_be = 'to_be_' + self.__get_role
         for i in self._table.filter(lambda x: x[to_be] == person_id and x['response'] == None).table:
             print(i)
 
-    def decide(self, person_id, project_id, decision, login_table, project_obj):
+    def decide(self, person_id, project_id, decision, login_table = None, project_obj = None):
         # Ask for project_id in the main class using self.view
         import datetime
         role = self.__get_role
@@ -115,27 +120,15 @@ class Request(Container):
             # Automatically refused all other requests
             for i in self._table.table:
                 if i[to_be] == person_id and i['ProjectID'] != project_id:
-                    self.decide(person_id, i['ProjectID'], 'rejected', login_table, project_obj)
+                    self.decide(person_id, i['ProjectID'], 'rejected')
             # Auto delete every request once the project ist full
-        for i in project_obj.get_table.table:
-            if (role == 'member' and i['member1'] != None and i['member2'] != None)\
-                or (role == 'advisor' and i['advisor'] != None):
-                for j in self._table.table:
-                     if i['ProjectID'] == j['ProjectID'] and j['response'] == None:
-                         self._table.table.remove(j)
-        # project = project_obj.find_dict('ProjectID', project_id)
-        # print(f'current project : {project}')
-        # for i in self._table.table:
-        #     print(i)
-        #     if ((role == 'member' 
-        #         and project['member1'] != None 
-        #         and project['member2'] != None)\
-        #     or (role == 'advisor' and project['advisor'] != None))\
-        #     and (i['ProjectID'] == project_id\
-        #     and i['response'] == None):
-        #         print(f'{role} full!')
-        #         print(f'deleting{i}')
-        #         self._table.table.remove(i)
+            for i in project_obj.get_table.table:
+                if (role == 'member' and i['member1'] != None and i['member2'] != None)\
+                    or (role == 'advisor' and i['advisor'] != None):
+                    for j in self._table.table:
+                        if i['ProjectID'] == j['ProjectID'] and j['response'] == None:
+                            self._table.table.remove(j)
+
 
 
 class Project(Container):
@@ -171,8 +164,39 @@ class Project(Container):
         elif key_update == 'member' and project_dict['member1'] == None:
             key_update = 'member1'
         self._table.update('ProjectID', project_id, key_update, val_update)
-        
-        
+
+
+class Main:
+    def __init__(self, id, role, database) -> None:
+        self.__id = id
+        self.__role = role
+        self.__database = database
+        print(f'Welcome! {self.__role} {self.__id}')
+        print()
+        #TODO do all the automatic notification process
+        if self.__role == 'student':
+            print("""S1: Accept/Reject Member Requests
+S2: Become a Leader and Create a New Project""")
+        elif self.__role == 'member':
+            print("""M1: View Project Status
+M2: View Request Status
+M3: Modify the Project's title""")
+        elif self.__role == 'leader':
+            print("L1: Requests Member/Advisor")
+            print("""M1: View Project Status
+M2: View Request Status
+M3: Modify the Project's title""")
+        elif self.__role == 'faculty':
+            print("F1: Accept/Reject Advisor Requests")
+        elif self.__role == 'advisor':
+            print("""A1: Approve the Project for Evaluation
+A2: GIVE FINAL APPROVAL FOR THE PROJECT""")
+        elif self.__role == 'admin':
+            print('Gomenasai, coming soon desu!')
+        choice = (input('Please choose one of the options above to proceed: '))
+        choice2 = ''.join([choice[0].capitalize(), choice[1]])
+        print('\n' + choice2)
+
 # the code below is for testing purposes
 if __name__ == '__main__':
     # __init__
@@ -206,11 +230,11 @@ if __name__ == '__main__':
     advisor_request.status('2')
     
     member_request.decide('1863421', '1', 'accepted', login, project_table)
-    member_request.decide('7998314', '1', 'rejected', login, project_table)
+    member_request.decide('7998314', '1', 'rejected')
     member_request.decide('5086282', '1', 'accepted', login, project_table)
     
     member_request.decide('1228464', '2', 'accepted', login, project_table)
-    member_request.decide('3938213', '2', 'rejected', login, project_table)
+    member_request.decide('3938213', '2', 'rejected')
     member_request.decide('4788888', '2', 'accepted', login, project_table)
     
     advisor_request.decide('2472659', '1', 'accepted', login, project_table)
@@ -223,3 +247,4 @@ if __name__ == '__main__':
     advisor_request.status('1')
     member_request.status('2')
     advisor_request.status('2')
+    print(login)
