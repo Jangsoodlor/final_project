@@ -40,7 +40,7 @@ There shall be 5 tables with the following attributes
 Initially, there're three types of people based on the csv files provided by T.Paruj; Admin, Faculty and Student. But the program will be able to assign new roles to these people.
 
 ## Student
-- See project member requests
+- See project member requests (Automatic Process)
 - Accept and deny those requests.
   - If accepted, the **Project** and **Member_pending_request** tables shall be updated, _<u>denying all other requests</u>_. `login['role']`will also be updated to `'member'`
   - Otherwise, the **Member_pending_request** will be updated.
@@ -54,7 +54,7 @@ Initially, there're three types of people based on the csv files provided by T.P
   - more features will be explained in the leader section.
 
 ## Leader
-- See project and requests status by pulling the corresponding dictionaries from **Project**, **Member_pending_request** and **Advisor_pending_request** tables.
+- See project and requests status by pulling the corresponding dictionaries from **Project**, **Member_pending_request** and **Advisor_pending_request** tables. (Automatic Process)
 - find and send requests to potential members
   - filtering out the unrelated person type from **Persons** table
   - print the filtered list, then asks for the ID of member who the leader wanted to recruit
@@ -68,7 +68,7 @@ Initially, there're three types of people based on the csv files provided by T.P
   - update the **Project** table.
 
 ## Faculty
-- See requests to be an advisor
+- See requests to be an advisor (Automatic Process)
   - Pull the info form **Advisor_pending_request** table.
 - Respond to those requests
   - If accepted, update the **Project** and **Advisor_pending_request** tables, _<u>denying all other requests</u>_. `login['role']`will also be updated to `'advisor'`.
