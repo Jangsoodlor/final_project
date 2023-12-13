@@ -1,6 +1,7 @@
 # BEGIN part 1
 import database
 import os
+import persons as p
 # import database module
 
 # define a funcion called initializing
@@ -20,7 +21,7 @@ def initializing():
     # print(DB.search('login'))
     # print()
     # DB.search('persons').insert({'ID': '0001', 'first': 'Arma', 'last': 'Agong', 'type': 'Yaaaaa'})
-    print(DB.search('persons'))
+    # print(DB.search('persons'))
     # print(type(DB.search('persons')))
     # print(DB.search('persons').table)
 
@@ -44,7 +45,7 @@ def login():
     user = DB.search('login').filter(lambda x: x['username'] == username 
             and x['password'] == password).select(['ID', 'role'])
     if user != []:
-        return(user)
+        return(user[0]['ID'], user[0]['role'])
     else:
         return(None)
 
@@ -76,8 +77,15 @@ def exit():
 # make calls to the initializing and login functions defined above
 
 initializing()
+print("""Graduation Project Management System. Version 0.0.0-alpha
+Copyright (C) 2023 Jangsoodlor. All Rights Reserved.
+This program is part of 01219114/15 Computer Programming I Course
+Semester 1 Academic Year 2566 B.E. (2023 A.D.)
+Kasetsart University
+""")
 val = login()
 print(val)
+session = p.Main(val[0], val[1], DB)
 
 # END part 1
 
