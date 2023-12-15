@@ -45,9 +45,9 @@ def login():
     user = DB.search('login').filter(lambda x: x['username'] == username 
             and x['password'] == password).select(['ID', 'role'])
     if user != []:
-        return(user[0]['ID'], user[0]['role'])
+        return user[0]['ID'], user[0]['role']
     else:
-        return(None)
+        return None
 
 # here are things to do in this function:
    # add code that performs a login task
@@ -83,28 +83,46 @@ This program is part of 01219114/15 Computer Programming I Course
 Semester 1 Academic Year 2566 B.E. (2023 A.D.)
 Kasetsart University
 """)
-val = login()
-print(val)
-session = p.Main(val[0], val[1], DB)
+while True:
+    try:
+        val = login()
+        if val != None:
+            break
+        else:
+            raise AssertionError
+    except AssertionError:
+        print('Login Failed.')
+        print('Please recheck your ID and Password again')
 
 # END part 1
 
 # CONTINUE to part 2 (to be done for the next due date)
 
 # based on the return value for login, activate the code that performs activities according to the role defined for that person_id
+print(f'Welcome! {val[1]} {val[0]}')
 
-# if val[1] == 'admin':
-#     pass
-# elif val[1] == 'student':
-#     print('Options')
-# elif val[1] == 'member':
-#     pass
-# elif val[1] == 'leader':
-#     pass
-# elif val[1] == 'faculty':
-#     pass
-# elif val[1] == 'advisor':
-#     pass
+if val[1] == 'student':
+    print("""S1: Accept/Reject Member Requests
+S2: Become a Leader and Create a New Project""")
+elif val[1] == 'member':
+    print("""M1: View Project Status
+M2: View Request Status
+M3: Modify the Project's title""")
+elif val[1] == 'leader':
+    print("L1: Requests Member/Advisor")
+    print("""M1: View Project Status
+M2: View Request Status
+M3: Modify the Project's title""")
+elif val[1] == 'faculty':
+    print("F1: Accept/Reject Advisor Requests")
+elif val[1] == 'advisor':
+    print("""A1: Approve the Project for Evaluation
+A2: GIVE FINAL APPROVAL FOR THE PROJECT""")
+elif val[1] == 'admin':
+    print('Gomenasai, coming soon desu!')
+choice = (input('Please choose one of the options above to proceed: '))
+
+session = p.Main(val[0], val[1], ''.join([choice[0].capitalize(), choice[1]]), DB)
 
 # once everyhthing is done, make a call to the exit function
 exit()

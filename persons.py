@@ -25,6 +25,9 @@
 #  
 #         Buddha for debugging without suffering
 #
+import database as dp
+import os
+
 class Container:
     def __init__(self, table) -> None:
         self._table = table
@@ -167,41 +170,26 @@ class Project(Container):
 
 
 class Main:
-    def __init__(self, id, role, database) -> None:
+    def __init__(self, id, role, do, database) -> None:
         self.__id = id
         self.__role = role
         self.__database = database
-        print(f'Welcome! {self.__role} {self.__id}')
-        print()
-        #TODO do all the automatic notification process
+        self.__do = do
+        print(self.__do)
+        
         if self.__role == 'student':
-            print("""S1: Accept/Reject Member Requests
-S2: Become a Leader and Create a New Project""")
-        elif self.__role == 'member':
-            print("""M1: View Project Status
-M2: View Request Status
-M3: Modify the Project's title""")
-        elif self.__role == 'leader':
-            print("L1: Requests Member/Advisor")
-            print("""M1: View Project Status
-M2: View Request Status
-M3: Modify the Project's title""")
-        elif self.__role == 'faculty':
-            print("F1: Accept/Reject Advisor Requests")
-        elif self.__role == 'advisor':
-            print("""A1: Approve the Project for Evaluation
-A2: GIVE FINAL APPROVAL FOR THE PROJECT""")
-        elif self.__role == 'admin':
-            print('Gomenasai, coming soon desu!')
-        choice = (input('Please choose one of the options above to proceed: '))
-        choice2 = ''.join([choice[0].capitalize(), choice[1]])
-        print('\n' + choice2)
+            if self.__do =='S2':
+                self.__become_leader()
+        
+        # student's code
+    def __become_leader(self):
+        if self.__role != 'student':
+            raise AssertionError('You should not be here')
+        self.__database.search('login').update('ID', self.__id, 'role', 'leader')
+            
 
 # the code below is for testing purposes
 if __name__ == '__main__':
-    # __init__
-    import database as dp
-    import os
     project = dp.Table('project', [])
     login = dp.Table('login', dp.ReadCSV(os.path.join('database', 'login.csv')).fetch)
     person = dp.Table('login', dp.ReadCSV(os.path.join('database', 'persons.csv')).fetch)
