@@ -1,5 +1,5 @@
 # BEGIN part 1
-import database
+import database as dp
 import os
 import persons as p
 # import database module
@@ -7,16 +7,24 @@ import persons as p
 # define a funcion called initializing
 
 def initializing():
-    #TODO find a more fancy (and less confusing) way to define DB
     global DB
-    DB = database.DB()
-    for file in os.listdir('database'):
-        if file.endswith('.csv'):
-            #TODO IMPORTANT fix the content variable because it should send only file name
-            content = database.ReadCSV(os.path.join('database', file)).fetch
-            table = database.Table(''.join(list(file)[:-4]), content)
-            DB.insert(table)
-            
+    DB = dp.DB()
+    try:
+        for file in os.listdir('database'):
+            if file.endswith('.csv'):
+                content = dp.ReadCSV(os.path.join('database', file)).fetch
+                table = dp.Table(''.join(list(file)[:-4]), content)
+                DB.insert(table)
+        check = ['member_pending_request', 'advisor_pending_request', 'project']
+        for i in check:
+            if DB.search(i) == None:
+                print(f'{i} table Does not exists. Creating {i} table')
+                DB.insert(dp.Table(i, []))
+    except FileNotFoundError:
+        raise FileNotFoundError('Please make sure that you have a folder named "database" in the program\'s directory.')
+    except (DB.search('login') == None, DB.search('persons') == None):
+        raise FileNotFoundError('login.csv" and "persons.csv" Files Does Not Exists. Please contact Administrator')
+
     # Code for testing that database ACTUALLY works.
     # print(DB.search('login'))
     # print()
@@ -76,21 +84,33 @@ def exit():
 
 # make calls to the initializing and login functions defined above
 
-initializing()
 print("""Graduation Project Management System. Version 0.0.0-alpha
 Copyright (C) 2023 Jangsoodlor. All Rights Reserved.
+
 This program is part of 01219114/15 Computer Programming I Course
 Semester 1 Academic Year 2566 B.E. (2023 A.D.)
 Kasetsart University
+
+DO NOT copy, modify, merge, publish, distribute, sublicense, and/or sell copies of this Software.
+UNLESS you're a Kasetsart University Computer Engineering Department Professor.
+
+THERE IS NO WARRANTY FOR THE PROGRAM. IN NO EVENT WILL THE COPYRIGHT HOLDER BE LIABLE TO YOU FOR DAMAGES, 
+INCLUDING ANY GENERAL, SPECIAL, INCIDENTAL OR CONSEQUENTIAL DAMAGES ARISING OUT OF THE USE 
+OR INABILITY TO USE THE PROGRAM (INCLUDING BUT NOT LIMITED TO LOSS OF DATA 
+OR DATA BEING RENDERED INACCURATE OR LOSSES SUSTAINED BY YOU OR THIRD PARTIES 
+OR A FAILURE OF THE PROGRAM TO OPERATE WITH ANY OTHER PROGRAMS), 
+EVEN IF SUCH HOLDER OR OTHER PARTY HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGES.
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
 """)
+initializing()
+print()
 while True:
-    try:
-        val = login()
-        if val != None:
-            break
-        else:
-            raise AssertionError
-    except AssertionError:
+    val = login()
+    if val != None:
+        break
+    else:
         print('Login Failed.')
         print('Please recheck your ID and Password again')
 
@@ -101,28 +121,14 @@ while True:
 # based on the return value for login, activate the code that performs activities according to the role defined for that person_id
 print(f'Welcome! {val[1]} {val[0]}')
 
-if val[1] == 'student':
-    print("""S1: Accept/Reject Member Requests
-S2: Become a Leader and Create a New Project""")
-elif val[1] == 'member':
-    print("""M1: View Project Status
-M2: View Request Status
-M3: Modify the Project's title""")
-elif val[1] == 'leader':
-    print("L1: Requests Member/Advisor")
-    print("""M1: View Project Status
-M2: View Request Status
-M3: Modify the Project's title""")
-elif val[1] == 'faculty':
-    print("F1: Accept/Reject Advisor Requests")
-elif val[1] == 'advisor':
-    print("""A1: Approve the Project for Evaluation
-A2: GIVE FINAL APPROVAL FOR THE PROJECT""")
-elif val[1] == 'admin':
-    print('Gomenasai, coming soon desu!')
-choice = (input('Please choose one of the options above to proceed: '))
-
-session = p.Main(val[0], val[1], ''.join([choice[0].capitalize(), choice[1]]), DB)
+while True:
+    try:
+        session = p.Main(val[0], val[1], DB)
+    except (PermissionError, ValueError):
+        print('Please choose a valid option.')
+    except KeyboardInterrupt:
+        print('exiting...')
+        break
 
 # once everyhthing is done, make a call to the exit function
 exit()
