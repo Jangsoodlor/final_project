@@ -115,4 +115,6 @@ if __name__ == '__main__':
     table.insert({'name' : 'john', 'status' : 'handsome'})
     table.insert({'name' : 'janos', 'status' : 'smart'})
     print(table)
-    table.update('name', 'janos', 'status', 'stupid')
+    table2 = table.filter(lambda x: x['name'] == 'janos').table[0]
+    table2['status'] = 'stupid'
+    print(table)

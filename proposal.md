@@ -18,14 +18,14 @@
   - These attributes are new:
     - Evaluators (Default = `[]`). This will be a nested list. of the evaluator's id and the score he or she give. Something like
       ```py
-      {Evaluators : [['0001', 10], ['0002', 9], ['0003', 20]]}
+      {evaluators : [['0001', 10], ['0002', 9], ['0003', 20]]}
       ```
     - Initially, the evaluator's id and their score (aka. first and second index of each list) will be set to a NoneType.
       ```py
       {Evaluators : [['0001', None], ['0002', None], ['0003', None]]}
       ```
 
-- The admin send the "evaluation requests" to 3 faculty members by appending the project to **Advisor_pending_request** table.
+- The admin send the "evaluation requests" to 3 faculty members by appending the project to **evaluator_pending_request** table.
 
 - If <u>some of those who are invited refused for some reason</u>, notify the admin to invite them again.
 - Each Evaluators can give score as an integer from 1 to 10. This will be written as a method in 
