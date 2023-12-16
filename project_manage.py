@@ -15,7 +15,11 @@ def initializing():
                 content = dp.ReadCSV(os.path.join('database', file)).fetch
                 table = dp.Table(''.join(list(file)[:-4]), content)
                 DB.insert(table)
-        check = ['member_pending_request', 'advisor_pending_request', 'project']
+        check = ['member_pending_request',
+                 'advisor_pending_request',
+                 'project',
+                 'project_to_eval',
+                 'evaluator_pending_request']
         for i in check:
             if DB.search(i) == None:
                 print(f'{i} table Does not exists. Creating {i} table')

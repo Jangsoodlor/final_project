@@ -167,7 +167,6 @@ class Evaluate(Container):
         for e in table['evaluators']:
             if e[0] == self.__eval_id:
                 e[1] = score
-        
 
 
 class Main:
@@ -177,6 +176,8 @@ class Main:
         self.__database = database
         self.__member_request = Request(self.__database.search('member_pending_request'))
         self.__advisor_request = Request(self.__database.search('advisor_pending_request'))
+        self.__evaluator_request = Request(self.__database.search('evaluator_pending_request'))
+        self.__project_to_eval = self.__database.search('project_to_eval')
         self.__projects = Project(self.__database.search('project'))
         
         if self.__role == 'student':
@@ -210,16 +211,20 @@ class Main:
             print("L1: Requests Member/Advisor")
             print("M1: Modify the Project's title")
 
-        elif self.__role == 'faculty':
+        elif 'faculty' in self.__role:
             self.__advisor_request.view(self.__id)
             print('\n' + 'Avialable Methods')
             print("F1: Accept/Reject Advisor Requests")
 
-        elif self.__role == 'advisor':
+        elif 'advisor' in self.__role:
             print('\n' + 'Avialable Methods')
             print("A1: Approve the Project for Evaluation")
             print("A2: GIVE FINAL APPROVAL FOR THE PROJECT")
 
+        if 'evaluator' in self.__role:
+            self.__print_eval()
+            print('E1: Give score to project')
+        
         elif self.__role == 'admin':
             print('Gomenasai, coming soon desu!')
 
@@ -271,7 +276,6 @@ class Main:
                 print('Please enter valid project id or choice')
                 continue
             break
-
 
     def __become_leader(self):
         title = input('Enter your project\'s title: ')
@@ -328,7 +332,13 @@ class Main:
         elif y == None and x == None:
             return z['ProjectID']
         return x['ProjectID']
-
+    
+    def __print_eval(self):
+        if len(self.__project_to_eval.table) != 0:
+            for i in self.__project_to_eval.table:
+                for j in i['evaluators']:
+                    if j[0] == self.__id:
+                        print(i)
 
     def __give_final_approval(self):
         while True:
