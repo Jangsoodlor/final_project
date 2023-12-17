@@ -25,9 +25,8 @@
       {Evaluators : [['0001', None], ['0002', None], ['0003', None]]}
       ```
 
-- The admin send the "evaluation requests" to 3 faculty members by appending the project to **evaluator_pending_request** table.
+- The admin will select 3 evaluators. AND they can't refuse that offer
 
-- If <u>some of those who are invited refused for some reason</u>, notify the admin to invite them again.
 - Each Evaluators can give score as an integer from 1 to 10. This will be written as a method in 
 - After each advisor gave scores, change the project status in both **Project_to_eval** and **Project** tables.
   ```py
