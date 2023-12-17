@@ -22,12 +22,12 @@
       ```
     Or at least that was the case. I found out this (17/12/23) morning that **csvwriter reads everything as a string. So I can't do nested list anymore**. So here's my new approach:
     ```py
-      {evaluator1 : evaluator No. 1's ID
-      {evaluator2 : evaluator No.2's ID
-      {evaluator3 : evaluator No.3's ID
-      {evaluator1_score : evaluator No.1's score
-      {evaluator2_score : evaluator No.2's score
-      {evaluator3_score : evaluator No.3's score
+      {evaluator1 : evaluator No. 1's ID}
+      {evaluator2 : evaluator No.2's ID}
+      {evaluator3 : evaluator No.3's ID}
+      {evaluator1_score : evaluator No.1's score}
+      {evaluator2_score : evaluator No.2's score}
+      {evaluator3_score : evaluator No.3's score}
       ```
     All of them defaulted to empty string because csvwriter also refused to recognize "NoneType" objects.
 
