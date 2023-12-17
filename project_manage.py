@@ -18,8 +18,7 @@ def initializing():
         check = ['member_pending_request',
                  'advisor_pending_request',
                  'project',
-                 'project_to_eval',
-                 'evaluator_pending_request']
+                 'project_to_eval']
         for i in check:
             if DB.search(i) == None:
                 print(f'{i} table Does not exists. Creating {i} table')
@@ -78,6 +77,9 @@ def exit():
             for dictionary in table.table:
                 writer.writerow(dictionary.values())
             myFile.close()
+        else:
+            os.remove(os.path.join(os.path.join(os.getcwd(), 'database'),
+                                   table.table_name + '.csv'))
 
 # here are things to do in this function:
    # write out all the tables that have been modified to the corresponding csv files
@@ -88,7 +90,7 @@ def exit():
 
 # make calls to the initializing and login functions defined above
 
-print("""Graduation Project Management System. Version 0.0.0-alpha
+print("""Graduation Project Management System. Version 0.0.1-beta
 Copyright (C) 2023 Jangsoodlor. All Rights Reserved.
 
 This program is part of 01219114/15 Computer Programming I Course
@@ -98,12 +100,7 @@ Kasetsart University
 DO NOT copy, modify, merge, publish, distribute, sublicense, and/or sell copies of this Software.
 UNLESS you're a Kasetsart University Computer Engineering Department's Professor or Teacher Assistant.
 
-THERE IS NO WARRANTY FOR THE PROGRAM. IN NO EVENT WILL THE COPYRIGHT HOLDER BE LIABLE TO YOU FOR DAMAGES, 
-INCLUDING ANY GENERAL, SPECIAL, INCIDENTAL OR CONSEQUENTIAL DAMAGES ARISING OUT OF THE USE 
-OR INABILITY TO USE THE PROGRAM (INCLUDING BUT NOT LIMITED TO LOSS OF DATA 
-OR DATA BEING RENDERED INACCURATE OR LOSSES SUSTAINED BY YOU OR THIRD PARTIES 
-OR A FAILURE OF THE PROGRAM TO OPERATE WITH ANY OTHER PROGRAMS), 
-EVEN IF SUCH HOLDER OR OTHER PARTY HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGES.
+THERE IS NO WARRANTY FOR THE PROGRAM. IN NO EVENT WILL THE COPYRIGHT HOLDER BE LIABLE TO YOU FOR DAMAGES.
 
 The above copyright notice and this permission notice shall be included in all
 copies or substantial portions of the Software.

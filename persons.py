@@ -140,7 +140,7 @@ class Project(Container):
         temp_dict['member1'] = ''
         temp_dict['member2'] = ''
         temp_dict['advisor'] = ''
-        temp_dict['status'] = 'Pending'
+        temp_dict['status'] = 'pending'
         self._table.insert(temp_dict)
         login_table.update('ID', leader_id, 'role', 'leader')
 
@@ -188,19 +188,20 @@ class Evaluate(Container):
         self.__project_id = val
 
     def give_score(self, score):
+        print('giving score...')
         project = self.find_dict('ProjectID', self.__project_id)
-        for key in project:
-            if key == self.__eval_id:
-                project[f'{key}_score'] = score
-                print('Successfully given score')
+        if project['evaluator1'] == self.__eval_id:
+            project['evaluator1_score'] = score
+        elif project['evaluator2'] == self.__eval_id:
+            project['evaluator2_score'] = score
+        elif project['evaluator3'] == self.__eval_id:
+            project['evaluator3_score'] = score
 
-        count = 0
-        for i in range(3):
-            if project[f'evaluator{i+1}_score'] != '':
-                count += 1
-        if count == 3:
-            project['status'] == 'evaluated'
-                
+        if project['evaluator1_score'] != ''\
+        and project['evaluator2_score'] != ''\
+        and project['evaluator3_score'] != '':
+            print('All evaluators have evaluated the project.')
+            project['status'] = 'evaluated'              
 
 
 class Main:
@@ -212,7 +213,7 @@ class Main:
         self.__advisor_request = Request(self.__database.search('advisor_pending_request'))
         self.__project_to_eval = Evaluate(self.__database.search('project_to_eval'), self.__id)
         self.__projects = Project(self.__database.search('project'))
-        
+        print()
         if self.__role == 'student':
             self.__member_request.view(self.__id)
             print('\n' + 'Avialable Methods')
@@ -244,9 +245,13 @@ class Main:
             print("F1: Accept/Reject Advisor Requests")
 
         elif 'advisor' in self.__role:
+            print('Project Status')
+            print(self.__projects.find_dict('advisor', self.__id))
+            print()
             print('\n' + 'Avialable Methods')
             print("A1: Approve the Project for Evaluation")
-            print("A2: GIVE FINAL APPROVAL FOR THE PROJECT")
+            print("A2: View Evaluation Status")
+            print("A3: GIVE FINAL APPROVAL FOR THE PROJECT")
 
         if 'evaluator' in self.__role:
             print('E1: Give score to project')
@@ -287,6 +292,9 @@ class Main:
             self.__send_project_for_eval()
     
         elif self.__do == 'A2':
+            self.__eval_status()
+        
+        elif self.__do == 'A3':
             self.__give_final_approval()
             
         elif self.__do == 'E1':
@@ -392,8 +400,12 @@ class Main:
         print('Successfully send the project for evaluation.')
 
     def __give_score(self):
+        print(f"+----------+---------------------+--------+--------+")
+        print(f"|Project ID|    Project Title    | Leader | Advisor|")
+        print(f"+----------+---------------------+--------+--------+")
         for i in self.__project_to_eval.eval_me():
-            print(i)
+            print(f"| {i['ProjectID']:<9}|{i['title']:^20} | {i['leader']:<7}| {i['advisor']:<7}|")
+            print(f"+----------+---------------------+--------+--------+")
         while True:
             print('If enter invalid project ID, your score will not be given.')
             project_id = input('Please enter Project ID: ')
@@ -404,7 +416,21 @@ class Main:
             except ValueError:
                 print('Please enter a valid score')
                 continue
+            if self.__project_to_eval.find_dict('ProjectID', project_id)['status'] == 'evaluated':
+                self.__projects.update(project_id, 'status', 'evaluated')
             break
+    
+    def __eval_status(self):
+        project = self.__project_to_eval.find_dict('advisor', self.__id)
+        if project != None:
+            print('Evaluation Status', end=': ')
+            print(project['status'])
+            if project['status'] == 'evaluated':
+                print(f'Score1: {project["evaluator1_score"]}')
+                print(f'Score2: {project["evaluator2_score"]}')
+                print(f'Score3: {project["evaluator3_score"]}')
+        else:
+            print('Please send the project to evaluate first')
 
     def __choose_evaluator(self):
         self.__project_to_eval.print_no_eval_project()
@@ -452,12 +478,19 @@ type exit to abort: ')
             if project_dict['status'] != 'evaluated':
                 print('Please send the project for evaluation first')
                 break
-            confirm = input('Are you sure (y/n): ')
-            if 'y' not in confirm.lower():
-                break
-            project_id = project_dict['Project_ID']
-            self.__projects.update(project_id, 'status', 'finished')
-
+            confirm = input('Approve or not? (y/n): ').lower()
+            project_id = project_dict['ProjectID']
+            if 'y' in confirm:
+                self.__projects.update(project_id, 'status', 'finished')
+                self.__project_to_eval.get_table.update('ProjectID', project_id, 'status', 'finished')
+                print('PROJECT APPROVED')
+            elif 'n' in confirm:
+                self.__projects.update(project_id, 'status', 'pending')
+                if len(self.__project_to_eval.get_table.table) == 1:
+                    self.__project_to_eval.get_table.table.clear()
+                else:
+                    self.__project_to_eval.get_table.table.remove(self.__project_to_eval.find_dict('advisor', self.__id))
+                print('PROJECT NOT APPROVED')
 
 if __name__ == '__main__':
     pass
