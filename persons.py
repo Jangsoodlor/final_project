@@ -201,7 +201,7 @@ class Evaluate(Container):
         and project['evaluator2_score'] != ''\
         and project['evaluator3_score'] != '':
             print('All evaluators have evaluated the project.')
-            project['status'] = 'evaluated'              
+            project['status'] = 'evaluated. waiting for final approval.'              
 
 
 class Main:
@@ -410,22 +410,24 @@ class Main:
             print('If enter invalid project ID, your score will not be given.')
             project_id = input('Please enter Project ID: ')
             try:
-                score = int(input('Please give score in integers: '))
+                score = int(input('Please give score in integers between 0 to 10: '))
+                if score < 0 or score > 10:
+                    raise ValueError
                 self.__project_to_eval.project_id = project_id
                 self.__project_to_eval.give_score(score)
             except ValueError:
                 print('Please enter a valid score')
                 continue
-            if self.__project_to_eval.find_dict('ProjectID', project_id)['status'] == 'evaluated':
-                self.__projects.update(project_id, 'status', 'evaluated')
+            if self.__project_to_eval.find_dict('ProjectID', project_id)['status'] == 'evaluated. waiting for final approval.':
+                self.__projects.update(project_id, 'status', 'evaluated. waiting for final approval.')
             break
-    
+
     def __eval_status(self):
         project = self.__project_to_eval.find_dict('advisor', self.__id)
         if project != None:
             print('Evaluation Status', end=': ')
             print(project['status'])
-            if project['status'] == 'evaluated':
+            if project['status'] == 'evaluated. waiting for final approval.':
                 print(f'Score1: {project["evaluator1_score"]}')
                 print(f'Score2: {project["evaluator2_score"]}')
                 print(f'Score3: {project["evaluator3_score"]}')
@@ -475,7 +477,7 @@ type exit to abort: ')
     def __give_final_approval(self):
         while True:
             project_dict = self.__projects.find_dict('advisor', self.__id)
-            if project_dict['status'] != 'evaluated':
+            if project_dict['status'] != 'evaluated. waiting for final approval.':
                 print('Please send the project for evaluation first')
                 break
             confirm = input('Approve or not? (y/n): ').lower()
