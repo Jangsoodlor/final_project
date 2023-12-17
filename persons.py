@@ -60,8 +60,6 @@ class Request(Container):
             return 'member'
         elif 'advisor' in self._table.table_name:
             return 'advisor'
-        elif 'evaluator' in self._table.table_name:
-            return 'evaluator'
 
     def request(self, project_id, recruit_id):
         """_summary_
@@ -114,9 +112,8 @@ class Request(Container):
                     self.decide(person_id, i['ProjectID'], 'rejected')
             # Auto delete every request once the project ist full
             for i in project_obj.get_table.table:
-                if ((role == 'member' and i['member1'] != '' and i['member2'] != '')\
-                    or (role == 'advisor' and i['advisor'] != ''))\
-                    and self.__get_role != 'evaluator':
+                if (role == 'member' and i['member1'] != '' and i['member2'] != '')\
+                    or (role == 'advisor' and i['advisor'] != ''):
                     for j in self._table.table:
                         if i['ProjectID'] == j['ProjectID'] and j['response'] == '':
                             self._table.table.remove(j)
@@ -257,11 +254,18 @@ class Main:
             print('E1: Give score to project')
         
         elif self.__role == 'admin':
-            print('D1: choose evaluator')
+            self.__print_database()
+            print('D1: choose evaluator: ')
+            print('D2: Insert new dict to table: ')
+            print('D3: Edit an existing dict in table: ')
+            print('D4: Delete an existing dict in table: ')
+            print('D5: DELETE TABLE')
+            print('D6: RESET PROGRAM STATE')
 
         print()
+        print('Pressing ENTER without inputting anything will abort the operation')
+        print('And return to the Main Menu unless stated otherwise,')
         self.__do = (input('Please choose one of the Avialable Methods above to proceed. Or type exit to exit: ')).capitalize()
-        print('Pressing ENTER without inputting anything will abort the operation unless stated otherwise.')
         if self.__do == 'Exit':
             raise KeyboardInterrupt
         elif len(self.__do) != 2:
@@ -302,6 +306,21 @@ class Main:
         
         elif self.__do == 'D1':
             self.__choose_evaluator()
+        
+        elif self.__do == 'D2':
+            self.__insert_dict_to_table()
+        
+        elif self.__do == 'D3':
+            self.__edit_dict_in_table()
+
+        elif self.__do == 'D4':
+            self.__delete_dict_in_table()
+        
+        elif self.__do == 'D5':
+            self.__clear_table()
+        
+        elif self.__do == 'D6':
+            self.__reset()
 
 
     def __member__print(self):
@@ -400,12 +419,13 @@ class Main:
         print('Successfully send the project for evaluation.')
 
     def __give_score(self):
-        print(f"+----------+---------------------+--------+--------+")
-        print(f"|Project ID|    Project Title    | Leader | Advisor|")
-        print(f"+----------+---------------------+--------+--------+")
+        print(f"+----------+---------------------+--------+--------+--------+--------+")
+        print(f"|Project ID|    Project Title    | Leader | Member1| Member2| Advisor|")
+        print(f"+----------+---------------------+--------+--------+--------+--------+")
         for i in self.__project_to_eval.eval_me():
-            print(f"| {i['ProjectID']:<9}|{i['title']:^20} | {i['leader']:<7}| {i['advisor']:<7}|")
-            print(f"+----------+---------------------+--------+--------+")
+            print(f"| {i['ProjectID']:<9}|{i['title']:^20} |{i['leader']:>8}|", end = '')
+            print(f"{i['member2']:>8}|{i['advisor']:>8}|")
+            print(f"+----------+---------------------+--------+--------+--------+--------+")
         while True:
             print('If enter invalid project ID, your score will not be given.')
             project_id = input('Please enter Project ID: ')
@@ -493,6 +513,55 @@ type exit to abort: ')
                 else:
                     self.__project_to_eval.get_table.table.remove(self.__project_to_eval.find_dict('advisor', self.__id))
                 print('PROJECT NOT APPROVED')
+    
+    def __print_database(self):
+        print('Databases: ')
+        self.__database.print_tables()
+        print()
+    
+    def __insert_dict_to_table(self):
+        table = self.__database.search(input('Please enter table: '))
+        temp_dict = {}
+        print('press ENTER without inputting for empty string')
+        for key in table.table[0]:
+            val = input(f'Please input value for {key}: ') or ''
+            temp_dict[key] = val
+        table.insert(temp_dict)
+    
+    def __edit_dict_in_table(self):
+        table = self.__database.search(input('Please enter table: '))
+        for i in table.table:
+            print(i)
+        key_main = input('Please enter main key: ')
+        val_main = input('Please enter main value: ')
+        key_update = input('Please enter key that you want to update: ')
+        val_update = input('Please enter key that you want to update: ')
+        table.update(key_main, val_main, key_update, val_update)
+
+    def __delete_dict_in_table(self):
+        table = self.__database.search(input('Please enter table: '))
+        for i in table.table:
+            print(i)
+        key_main = input('Please enter main key: ')
+        val_main = input('Please enter main value: ')
+        for i in table.table:
+            if i[key_main] == val_main:
+                table.table.remove(i)
+
+    def __clear_table(self):
+        self.__database.search(input('Please enter table: ')).table.clear()
+
+    def __reset(self):
+        self.__database.search('member_pending_request').table.clear()
+        self.__database.search('advisor_pending_request').table.clear()
+        self.__database.search('project').table.clear()
+        self.__database.search('project_to_eval').table.clear()
+        for i in self.__database.search('login').table:
+            if 'advisor' in i['role'] or 'evaluator' in i['role']:
+                i['role'] = 'faculty'
+            elif i['role'] in ['member', 'leader']:
+              i['role'] = 'student'
+
 
 if __name__ == '__main__':
     pass

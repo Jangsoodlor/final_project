@@ -33,6 +33,10 @@ class DB:
             if table.table_name == table_name:
                 return table
         return None
+    
+    def print_tables(self):
+        for i in self.database:
+            print(i.table_name)
 
 
 # add in code for a Table class

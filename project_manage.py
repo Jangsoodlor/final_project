@@ -78,8 +78,11 @@ def exit():
                 writer.writerow(dictionary.values())
             myFile.close()
         else:
-            os.remove(os.path.join(os.path.join(os.getcwd(), 'database'),
+            try:
+                os.remove(os.path.join(os.path.join(os.getcwd(), 'database'),
                                    table.table_name + '.csv'))
+            except FileNotFoundError:
+                pass
 
 # here are things to do in this function:
    # write out all the tables that have been modified to the corresponding csv files
