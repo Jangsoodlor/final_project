@@ -158,7 +158,7 @@ class Evaluate(Container):
         # Ask the evaluator what project he/she wants to evaluate from the main class
         # Assuming new attributes are appended from the main class already
         # And the request handling will be done in the main class
-        super.__init__(project_to_eval_table)
+        super().__init__(project_to_eval_table)
         self.__project_id = project_id
         self.__eval_id = evaluator_id
 
@@ -166,14 +166,17 @@ class Evaluate(Container):
         return_list = []
         if len(self._table.table) != 0:
             for i in self._table.table:
-                for j in i['evaluators']:
-                    if j[0] == self.__eval_id:
+                for key in i:
+                    if i[key] == self.__eval_id and key != 'advisor':
                         return_list.append(i)
         return return_list
 
     def print_no_eval_project(self):
+        print('Projects that needs evaluator:')
         for i in self._table.table:
-            if i['evaluators'] == []:
+            if i['evaluator1'] == ''\
+            and i['evaluator2'] == ''\
+            and i['evaluator3'] == '':
                 print(i)
     
     @property
@@ -185,15 +188,18 @@ class Evaluate(Container):
         self.__project_id = val
 
     def give_score(self, score):
+        project = self.find_dict('ProjectID', self.__project_id)
+        for key in project:
+            if key == self.__eval_id:
+                project[f'{key}_score'] = score
+                print('Successfully given score')
+
         count = 0
-        project = self._table.filter(lambda x: x['ProjectID'] == self.__project_id).table[0]
-        for e in project['evaluators']:
-            if e[0] == self.__eval_id:
-                e[1] = score
-            if e[1] != '':
+        for i in range(3):
+            if project[f'evaluator{i+1}_score'] != '':
                 count += 1
         if count == 3:
-            project['status'] = 'evaluated'
+            project['status'] == 'evaluated'
                 
 
 
@@ -249,10 +255,9 @@ class Main:
             print('D1: choose evaluator')
 
         print()
-        print('The program will exit from the methods without doing anything if you input empty string')
-        print('(AKA. pressing ENTER without inputting anything.)')
-        self.__do = (input('Please choose one of the Avialable Methods above to proceed. Or press ENTER to exit: ')).capitalize()
-        if self.__do == '':
+        self.__do = (input('Please choose one of the Avialable Methods above to proceed. Or type exit to exit: ')).capitalize()
+        print('Pressing ENTER without inputting anything will abort the operation unless stated otherwise.')
+        if self.__do == 'Exit':
             raise KeyboardInterrupt
         elif len(self.__do) != 2:
             raise ValueError
@@ -279,7 +284,7 @@ class Main:
             self.__update_project_title()
         
         elif self.__do == 'A1':
-            self.__give_final_approval()
+            self.__send_project_for_eval()
     
         elif self.__do == 'A2':
             self.__give_final_approval()
@@ -313,10 +318,11 @@ class Main:
     
     def __decide_request(self):
         while True:
-            project_id = input('Please input your Project ID. Or press ENTER to exit: ')
+            print('pressing ENTER without inputting anything project_id and/or decision will abort the process')
+            project_id = input('Please input your Project ID: ')
             if project_id == '':
                 break
-            decision = input('Please input your decision (Accepted/Reject). Or press ENTER to exit: ').lower()
+            decision = input('Please input your decision (Accepted/Rejected). DONT FORGET THE "ED" AT THE END: ').lower()
             if decision == '':
                 break
             try:
@@ -372,12 +378,18 @@ class Main:
         title = input('Enter your project\'s title: ')
         self.__projects.update(project_id, 'title', title)
 
-    def send_project_for_eval(self):
+    def __send_project_for_eval(self):
         self.__projects.get_table.update('advisor', self.__id, 'status', 'waiting for evaluation')
         import copy
         temp_dict = copy.deepcopy(self.__projects.find_dict('advisor', self.__id))
-        temp_dict['evaluators'] = []
-        self.__project_to_eval.get_table.append(temp_dict)
+        temp_dict['evaluator1'] = ''
+        temp_dict['evaluator2'] = ''
+        temp_dict['evaluator3'] = ''
+        temp_dict['evaluator1_score'] = ''
+        temp_dict['evaluator2_score'] = ''
+        temp_dict['evaluator3_score'] = ''
+        self.__project_to_eval.get_table.table.append(temp_dict)
+        print('Successfully send the project for evaluation.')
 
     def __give_score(self):
         for i in self.__project_to_eval.eval_me():
@@ -391,23 +403,29 @@ class Main:
                 self.__project_to_eval.give_score(score)
             except ValueError:
                 print('Please enter a valid score')
-    
+                continue
+            break
+
     def __choose_evaluator(self):
         self.__project_to_eval.print_no_eval_project()
-        project_id = input('Please enter project ID: ')
-        people_table = self.__database.search('login').join(self.__database.search('persons'), 'ID')
+        while True:
+            project_id = input('Please enter project ID: ')
+            if project_id == '':
+                raise ValueError
+            break
         print()
+        advisor_id = self.__projects.find_dict('ProjectID', project_id)['advisor']
         print('Availale Evaluators')
-        people = people_table.filter(lambda x: ('advisor' in x['role'] or 'faculty' in x['role']) 
-            and self.__projects.find_dict('ProjectID', project_id)['advisor'] != x['ID'])
+        people = self.__database.search('persons').filter(lambda x : x['type'] == 'faculty' 
+                                                          and x['ID'] != advisor_id).table
         for i in people:
                 print(i)
         recruit_list  = []
         count = 0
         while count < 3:
         # make the loop limited to 3 rounds and a way to cancel the procedure.
-            recruit = input('Type the ID of the person you want to choose as evaluator,\
-                        type exit to abort: ')
+            recruit = input('Type the ID of the person you want to choose as evaluator, \
+type exit to abort: ')
             if recruit == 'exit':
                 break
             elif recruit not in [i['ID'] for i in people] :
@@ -419,18 +437,21 @@ class Main:
             count += 1
         
         if len(recruit_list) == 3:
-            for i in recruit_list:
-                self.__project_to_eval.get_table.filter(lambda x: x['ProjectID'] == project_id)[0]['evaluators'].append([i, ''])
-                for j in self.__database.search('login').table:
-                    if j['ID'] == i and 'and evaluator' not in j['role']:
-                        j['role'] += ' and evaluator'
+            for i in range(3):
+                self.__project_to_eval.get_table.filter(lambda x: x['ProjectID'] == project_id)\
+                .table[0][f'evaluator{i+1}'] = recruit_list[i]
+            for i in self.__database.search('login').table:
+                if i['ID'] in recruit_list and 'evaluator' not in i['role']:
+                    i['role'] += ' and evaluator'
+            print('Successfully added evaluator')
         
 
     def __give_final_approval(self):
         while True:
-            project_dict = self.project.find_dict('advisor', self.__id)
+            project_dict = self.__projects.find_dict('advisor', self.__id)
             if project_dict['status'] != 'evaluated':
                 print('Please send the project for evaluation first')
+                break
             confirm = input('Are you sure (y/n): ')
             if 'y' not in confirm.lower():
                 break
