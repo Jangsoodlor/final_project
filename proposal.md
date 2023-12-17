@@ -20,14 +20,20 @@
       ```py
       {evaluators : [['0001', 10], ['0002', 9], ['0003', 20]]}
       ```
-    - Initially, the evaluator's id and their score (aka. first and second index of each list) will be set to a NoneType.
-      ```py
-      {Evaluators : [['0001', None], ['0002', None], ['0003', None]]}
+    Or at least that was the case. I found out this (17/12/23) morning that **csvwriter reads everything as a string. So I can't do nested list anymore**. So here's my new approach:
+    ```py
+      {evaluator1 : evaluator No. 1's ID
+      {evaluator2 : evaluator No.2's ID
+      {evaluator3 : evaluator No.3's ID
+      {evaluator1_score : evaluator No.1's score
+      {evaluator2_score : evaluator No.2's score
+      {evaluator3_score : evaluator No.3's score
       ```
+    All of them defaulted to empty string because csvwriter also refused to recognize "NoneType" objects.
 
-- The admin will select 3 evaluators. AND they can't refuse that offer
+- The admin will select 3 evaluators. AND they can't refuse that offer.
 
-- Each Evaluators can give score as an integer from 1 to 10. This will be written as a method in 
+- Each Evaluators can give score as an integer from 1 to 10.
 - After each advisor gave scores, change the project status in both **Project_to_eval** and **Project** tables.
   ```py
   {project['status'] : 'Evaluated. waiting for final approval.'}
@@ -36,6 +42,6 @@
 - The advisor decides whether to give the final approval.
   - If yes, Change project status in both tables once again.
     ```py
-    {project['status'] : 'Finished'}
+    {project['status'] : 'finished'}
     ```
-  - If no, revert the project status to what it was before.
+  - If no, revert the project status to what it was before. And delete the project form the Project_to_eval table.
