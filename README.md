@@ -103,7 +103,8 @@ UPDATE: I actually found last-minute bugs lol
 - Advisor can submit project for evaluation multiple times.
 - Members and leaders can change title everytime. Even if the project is finished
 - Project Title can be empty string. **Which is a FEATURE unique to my program, not a bug.**
-- Evaluator does not lose his role when there's no more projects to evaluate. Albeit he cannot evaluate the projects that's finished evaluating anyways.
+- Evaluator does not lose his role when there's no more projects to evaluate. Albeit he cannot evaluate the projects that has been marked finished by the advisor anyways.
+- Leader can invite members after all members have been invited. Those invites should be automatically deleted after someone accepts an offer from other groups.
 
 # Copyright Notice
 Graduation Project Management System.
