@@ -92,7 +92,7 @@ def exit():
 
 # make calls to the initializing and login functions defined above
 
-print("""Graduation Project Management System. Version 0.0.1-beta
+print("""Graduation Project Management System. Version 1.0.0
 Copyright (C) 2023 Jangsoodlor. All Rights Reserved.
 This program is part of 01219114/15 Computer Programming I Course
 Semester 1 Academic Year 2566 B.E. (2023 A.D.)
@@ -109,7 +109,7 @@ initializing()
 print()
 while True:
     val = login()
-    if val is None:
+    if val is not None:
         break
     else:
         print('Login Failed.')
