@@ -34,7 +34,7 @@
 - The admin will select 3 evaluators. AND they can't refuse that offer.
 
 - Each Evaluators can give score as an integer from 1 to 10.
-- After each advisor gave scores, change the project status in both **Project_to_eval** and **Project** tables.
+- After each evaluator gave scores, change the project status in both **Project_to_eval** and **Project** tables.
   ```py
   {project['status'] : 'Evaluated. waiting for final approval.'}
   ```
