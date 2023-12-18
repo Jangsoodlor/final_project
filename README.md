@@ -8,15 +8,29 @@
 ## Class Container
 This class is, like the name suggests, a container class. Which all the other classes except the main class inherited its attributes from.
 
-|method|explanation|
-|__init__|take in table object as a starting attribute|
-|get_table|returns the table object|
-|find_dict|returns the first dictionary which matches the key and value the user inputted|
-|__str__|print table|
+|method|explanation|arguments taken|
+|------|-----------|----------------|
+|__init__|take in table object as a starting attribute|table|
+|get_table|returns the table object|None|
+|find_dict|returns the first dictionary which matches the key and value the user inputted|None|
+|__str__|print table|None|
 
 ## Class Request
 This class handled requests. Inherited attributes from container.
-|method|explanation|
+|method|explanation|arguments taken|
+|------|-----------|---------------|
+|__init__|inherits from container|either "member_request_table" or "advisor_request_table" table|
+|__get_role|get the role of the user from the table's name|None|
+|request|append the request into the respective tables.|project_id, recruit_id|
+|status|prints all member/advisor requests of a project|project_id|
+|view|prints all requests sent to a particular person|person_id|
+|view_return|return a list of  ProjectID of projects that requested this person.|person_id|
+|decide|handle the decision of a person on whether to join a particular project or not. And modify the login and project tables.|person_id, project_id, decision, login_table=None, project_obj=None (project_obj is an object in Project class, which is explained below)|
+
+## Class Project
+
+
+
 
 # Files necessary to run the program:
   - database.py
