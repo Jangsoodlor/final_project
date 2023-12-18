@@ -94,7 +94,7 @@ For completion percentage, please refers to [Bugs and completion percentage](#Bu
 |Admin|Reset program's state|__reset|None|
 
 # Bugs and Completion Percentage
-**Completion: 99%** (No docstring lol)
+**Completion: 99%** (everything completed except docstring lol)
 I've spent three hours finding and fixing bugs. The only bugs I can think of is IndentationError. Since I run pylint after all the debuggings. But that should be almost impossible because I rigorously checked for indentation mistakes before pushing the final commit. The other thing is the way os library handles folder and may not detect a database.
 
 UPDATE: I actually found last-minute bugs lol
