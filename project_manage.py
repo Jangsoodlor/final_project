@@ -95,14 +95,12 @@ def exit():
 
 print("""Graduation Project Management System. Version 0.0.1-beta
 Copyright (C) 2023 Jangsoodlor. All Rights Reserved.
-
 This program is part of 01219114/15 Computer Programming I Course
 Semester 1 Academic Year 2566 B.E. (2023 A.D.)
 Kasetsart University
 
 DO NOT copy, modify, merge, publish, distribute, sublicense, and/or sell copies of this Software.
 UNLESS you're a Kasetsart University Computer Engineering Department's Professor or Teacher Assistant.
-
 THERE IS NO WARRANTY FOR THE PROGRAM. IN NO EVENT WILL THE COPYRIGHT HOLDER BE LIABLE TO YOU FOR DAMAGES.
 
 The above copyright notice and this permission notice shall be included in all
@@ -130,8 +128,8 @@ while True:
         session = p.Main(val[0], val[1], DB)
     except (PermissionError, ValueError):
         print('Please choose a valid option.')
-    except KeyboardInterrupt:
-        print('exiting...')
+    except InterruptedError:
+        print('Saving and Exiting....')
         break
 
 # once everyhthing is done, make a call to the exit function
