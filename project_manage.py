@@ -1,6 +1,6 @@
 # BEGIN part 1
-import database as dp
 import os
+import database as dp
 import persons as p
 # import database module
 
@@ -53,12 +53,11 @@ def initializing():
 def login():
     username = input('username: ')
     password = input('password: ')
-    user = DB.search('login').filter(lambda x: x['username'] == username 
+    user = DB.search('login').filter(lambda x: x['username'] == username
             and x['password'] == password).select(['ID', 'role'])
     if user != []:
         return user[0]['ID'], user[0]['role']
-    else:
-        return None
+    return None
 
 # here are things to do in this function:
    # add code that performs a login task
@@ -87,7 +86,7 @@ def exit():
 # here are things to do in this function:
    # write out all the tables that have been modified to the corresponding csv files
    # By now, you know how to read in a csv file and transform it into a list of dictionaries. For this project, you also need to know how to do the reverse, i.e., writing out to a csv file given a list of dictionaries. See the link below for a tutorial on how to do this:
-   
+
    # https://www.pythonforbeginners.com/basics/list-of-dictionaries-to-csv-in-python
 
 
@@ -110,7 +109,7 @@ initializing()
 print()
 while True:
     val = login()
-    if val != None:
+    if val is None:
         break
     else:
         print('Login Failed.')

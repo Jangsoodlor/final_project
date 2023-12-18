@@ -1,30 +1,3 @@
-#  To minimize bugs, include this comment:
-#  
-#  
-#                        _oo0oo_
-#                       o8888888o
-#                       88" . "88
-#                       (| -_- |)
-#                       0\  =  /0
-#                     ___/`---'\___
-#                   .' \|     |// '.
-#                  / \|||  :  |||// \
-#                 / _||||| -:- |||||- \
-#                |   | \\  -  /// |   |
-#                | \_|  ''\---/''  |_/ |
-#                \  .-\__  '-'  ___/-. /
-#              ___'. .'  /--.--\  `. .'___
-#           ."" '<  `.___\_<|>_/___.' >' "".
-#          | | :  `- \`.;`\ _ /`;.`/ - ` : | |
-#          \  \ `_.   \_ __\ /__ _/   .-` /  /
-#      =====`-.____`.___ \_____/___.-`___.-'=====
-#                        `=---='
-#  
-#  
-#      ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ 
-#  
-#         Buddha for debugging without suffering
-#
 import database as dp
 import os
 
@@ -35,10 +8,10 @@ class Container:
     @property
     def get_table(self):
         return self._table
-    
+
     def __str__(self) -> str:
         return str(self._table)
-    
+
     def find_dict(self, key, args):
         try:
             return self._table.filter(lambda x: x[key] == args).table[0]
@@ -90,7 +63,7 @@ class Request(Container):
         to_be = 'to_be_' + self.__get_role
         for i in self._table.filter(lambda x: x[to_be] == person_id).table:
             print(i)
-            
+
     def view_return(self, person_id):
         """_summary_
         returns ProjectID of projects that recruited this person.
@@ -138,9 +111,8 @@ class Project(Container):
     """
     def __init__(self, table) -> None:
         super().__init__(table)
-    
+
     def create(self, title, leader_id, login_table):
-        #TODO write AssertionError if a leader already have a project
         temp_dict = {}
         temp_dict['ProjectID'] = str(len(self._table.table) + 1)
         temp_dict['title'] = title
@@ -187,7 +159,7 @@ class Evaluate(Container):
             and i['evaluator3'] == '':
                 print(self._table.filter(lambda x: x['ProjectID'] == i['ProjectID'])\
                     .select(['ProjectID', 'title', 'leader', 'member1', 'member2', 'advisor']))
-    
+
     @property
     def project_id(self):
         return self.__project_id
@@ -217,7 +189,7 @@ class Evaluate(Container):
         and project['evaluator3_score'] != ''\
         and project['status'] == 'waiting for evaluation':
             print('All evaluators have evaluated the project.')
-            project['status'] = 'evaluated. waiting for final approval.'              
+            project['status'] = 'evaluated. waiting for final approval.'
 
 
 class Main:
@@ -270,7 +242,7 @@ class Main:
 
         if 'evaluator' in self.__role:
             print('E1: Give score to project')
-        
+
         elif self.__role == 'admin':
             self.__print_database()
             print('D1: View projects that needs evaluators and Choose evaluators')
@@ -289,7 +261,7 @@ class Main:
             raise KeyboardInterrupt
         elif len(self.__do) != 2:
             raise ValueError
-        
+
         if ('S' in self.__do and self.__role != 'student')\
         or ('M' in self.__do and self.__role not in ['member', 'leader'])\
         or ('L' in self.__do and self.__role != 'leader')\
@@ -298,59 +270,59 @@ class Main:
         or ('E' in self.__do and 'evaluator' not in self.__role)\
         or ('D' in self.__do and self.__role != 'admin'):
             raise PermissionError
-        
+
         if self.__do == 'S1' or self.__do == 'F1':
             self.__decide_request()
-        
+
         elif self.__do =='S2':
             self.__become_leader()
-        
+
         elif self.__do == 'L1':
             self.__recruit()
-        
+
         elif self.__do == 'M1':
             self.__update_project_title()
-        
+
         elif self.__do == 'A1':
             self.__send_project_for_eval()
-    
+
         elif self.__do == 'A2':
             self.__eval_status()
-        
+
         elif self.__do == 'A3':
             self.__give_final_approval()
-            
+
         elif self.__do == 'E1':
             self.__give_score()
-        
+
         elif self.__do == 'D1':
             self.__choose_evaluator()
-        
+
         elif self.__do == 'D2':
             self.__insert_dict_to_table()
-        
+
         elif self.__do == 'D3':
             self.__edit_dict_in_table()
 
         elif self.__do == 'D4':
             self.__delete_dict_in_table()
-        
+
         elif self.__do == 'D5':
             self.__clear_table()
-        
+
         elif self.__do == 'D6':
             self.__reset()
 
 
     def __member__print(self):
-            print('Project Status')
-            print(self.__projects.find_dict('ProjectID', self.__find_project_id()))
-            print()
-            print('Member Request Status')
-            self.__member_request.status(self.__find_project_id())
-            print()
-            print('Advisor Request Status')
-            self.__advisor_request.status(self.__find_project_id())
+        print('Project Status')
+        print(self.__projects.find_dict('ProjectID', self.__find_project_id()))
+        print()
+        print('Member Request Status')
+        self.__member_request.status(self.__find_project_id())
+        print()
+        print('Advisor Request Status')
+        self.__advisor_request.status(self.__find_project_id())
 
     def __find_project_id(self):
         x = self.__projects.find_dict('leader', self.__id)
@@ -361,7 +333,7 @@ class Main:
         elif y == None and x == None:
             return z['ProjectID']
         return x['ProjectID']
-    
+
     def __decide_request(self):
         while True:
             print('pressing ENTER without inputting anything project_id and/or decision will abort the process')
@@ -496,10 +468,10 @@ Press ENTER without inputting anything to stop: ')
         print()
         advisor_id = self.__projects.find_dict('ProjectID', project_id)['advisor']
         print('Availale Evaluators')
-        people = self.__database.search('persons').filter(lambda x : x['type'] == 'faculty' 
+        people = self.__database.search('persons').filter(lambda x : x['type'] == 'faculty'
                 and x['ID'] != advisor_id).select(['ID', 'first', 'last'])
         for i in people:
-                print(i)
+            print(i)
         recruit_list  = []
         count = 0
         while count < 3:
@@ -516,7 +488,7 @@ type exit to cancel: ')
                 continue
             recruit_list.append(recruit)
             count += 1
-        
+
         if len(recruit_list) == 3:
             for i in range(3):
                 self.__project_to_eval.get_table.filter(lambda x: x['ProjectID'] == project_id)\
@@ -525,7 +497,7 @@ type exit to cancel: ')
                 if i['ID'] in recruit_list and 'evaluator' not in i['role']:
                     i['role'] += ' and evaluator'
             print('Successfully added evaluator')
-        
+
 
     def __give_final_approval(self):
         while True:
@@ -547,12 +519,12 @@ type exit to cancel: ')
                     self.__project_to_eval.get_table.table.remove(self.__project_to_eval.find_dict('advisor', self.__id))
                 print('PROJECT NOT APPROVED')
             break
-    
+
     def __print_database(self):
         print('Databases: ')
         self.__database.print_tables()
         print()
-    
+
     def __insert_dict_to_table(self):
         table = self.__database.search(input('Please enter table: '))
         temp_dict = {}
@@ -562,7 +534,7 @@ type exit to cancel: ')
             temp_dict[key] = val
         table.insert(temp_dict)
         print('done')
-    
+
     def __edit_dict_in_table(self):
         table = self.__database.search(input('Please enter table: '))
         for i in table.table:
@@ -598,7 +570,7 @@ type exit to cancel: ')
             if 'advisor' in i['role'] or 'evaluator' in i['role']:
                 i['role'] = 'faculty'
             elif i['role'] in ['member', 'leader']:
-              i['role'] = 'student'
+                i['role'] = 'student'
         print('done')
 
 
@@ -611,7 +583,7 @@ if __name__ == '__main__':
     # member_request = Request(dp.Table('member_request', []))
     # advisor_request = Request(dp.Table('advisor_request', []))
     # project_table = Project(dp.Table('Project', []))
-    
+
     # print(member_request)
     # print(project_table)
 
