@@ -5,18 +5,29 @@
   - persons.csv
 
 # Table of Contents
-- [Files NECESSARY to run the program](#files-necessary-to-run-the-program)
 - [HOW TO RUN?](#how-to-run)
-- [Classes and Functions](#classes-and-functions)
-  - [Container](#class-container)
-  - [Request](#class-request)
-  - [Project](#class-project)
-  - [Evaluate](#class-evaluate)
-  - [Main](#class-main)
+  - [Files NECESSARY to run the program](#files-necessary-to-run-the-program)
+- [A list of files and a brief description of classes it contains](#a-list-of-files-and-a-brief-description-of-classes-it-contains)
+  - [project_manage.py](#project_managepy)
+  - [database.py](#databasepy)
+  - [persons.py](#personspy)
+    - [Container](#class-container)
+    - [Request](#class-request)
+    - [Project](#class-project)
+    - [Evaluate](#class-evaluate)
+    - [Main](#class-main)
+  - [database folder and the csv files](#database-folder)
+  - [TODO.md](#todomd)
+  - [proposal.md](#proposalmd)
+  - [license file](#license)
+  - [gitignore](#gitignore)
 - [A table detailing each role and its actions](#a-table-detailing-each-role-and-its-actions)
 - [Known Bugs](#known-bugs)
 
-# Files NECESSARY to run the program:
+# How to run?
+  - clone or download the project
+  - **run the [project_manage.py](project_manage.py) file.**
+## Files NECESSARY to run the program:
   - database.py
   - project_manage.py
   - persons.csv
@@ -31,15 +42,26 @@
   - copy
   
   all of which are standard python libraries.
-  
-# How to run?
-  - clone or download the project
-  - **run the [project_manage.py](project_manage.py) file.**
 
-# Classes and Functions
-All additional classes (aside from ReadCSV, Table and Database) is in the [persons.py](persons.py) file.
+# A list of files and a brief description of classes it contains
 
-## Class Container
+## [project_manage.py](project_manage.py)
+THIS IS THE MAIN PART OF THE PROGRAM. there's no classes here. You run this file in order to run the program. It reads the csv, then create tables out of them, then put into a database. All of which utilizes classes from [database.py](database.py). Intiate login, run the main part, which is the [main](#class-main) class of the persons.py file. Then write the database and exits. 
+
+## [database.py](database.py)
+A file containing the database.
+### Class ReadCSV
+Read the CSV file and convert it to a list of dicts.
+
+### Class Table
+Get the list of dicts read by Class ReadCSV and convert it into a table object.
+
+### Class Database
+A database is a list of tables.
+
+## [Persons.py](persons.py)
+All other classes that are not in the database file. It utilizes the classes and methods in the [database.py](database.py) file
+### Class Container
 This class is, like the name suggests, a container class. Which all the other classes except the main class inherited its attributes from.
 
 |method|description|additional arguments taken|
@@ -49,7 +71,7 @@ This class is, like the name suggests, a container class. Which all the other cl
 |find_dict|returns the first dictionary which matches the key and value the user inputted|None|
 |__str__|print table|None|
 
-## Class Request
+### Class Request
 This class handled requests. Inherited attributes from container.
 |method|description|additional arguments taken|
 |------|-----------|---------------|
@@ -61,7 +83,7 @@ This class handled requests. Inherited attributes from container.
 |view_return|return a list of  ProjectID of projects that requested this person.|person_id|
 |decide|handle the decision of a person on whether to join a particular project or not. And modify the login and project tables.|person_id, project_id, decision, login_table=None, project_obj=None (project_obj is an object in Project class, which is explained below)|
 
-## Class Project
+### Class Project
 This class handles the modification of the project table. Inherits from the Container class
 |method|description|additional arguments taken|
 |------|-----------|---------------|
@@ -69,7 +91,7 @@ This class handles the modification of the project table. Inherits from the Cont
 |create|creates a new project and change the role of member who started the project to leader|title, leader_id, login_table|
 |update|update the project table with ProjectID as the main key|project_id, key_update, val_update|
 
-## Class Evaluate
+### Class Evaluate
 Inherits from the Container class. This class handles the modification of the project_to_eval table.
 |method/property|description|additional arguments taken|
 |------|-----------|---------------|
@@ -79,8 +101,31 @@ Inherits from the Container class. This class handles the modification of the pr
 |project_id|a getter and setter method. use to set project_id|project_id|
 |give_score|give score to projects|score|
 
-## Class Main
+### Class Main
 THE Main class. it's the class that receives inputs and send it to other classes. And sometimes modified the database directly. Further explanation is in the next section.
+
+## [database folder](database)
+It's a folder containing all the database files. Initially starting with [login.csv](database/login.csv) and [persons.csv](database/persons.csv). But other csv file can be written later on.
+
+Here's the list of all possible csv files to be created
+- login.csv
+- persons.csv
+- member_pending_request.csv
+- advisor_pending_request.csv
+- project.csv
+- project_to_eval.csv
+
+## [TODO.md](TODO.md)
+A todo file
+
+## [proposal.md](proposal.md)
+A proposal file
+
+## [LICENSE](LICENSE)
+A License file. Which prohibits everyone except KU CPE's Professors and TAs from copying my code.
+
+## [.gitignore](.gitignore)
+A gitignore file
 
 # A table detailing each role and its actions
 Because of the way I design this program, all actions done by the user must goes through at least one method in the main class first the Main class first before going to other class
