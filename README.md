@@ -97,11 +97,13 @@ For completion percentage, please refers to [Bugs and completion percentage](#Bu
 **Completion: 99%** (No docstring lol)
 I've spent three hours finding and fixing bugs. The only bugs I can think of is IndentationError. Since I run pylint after all the debuggings. But that should be almost impossible because I rigorously checked for indentation mistakes before pushing the final commit. The other thing is the way os library handles folder and may not detect a database.
 
-UPDATE: I actually found bugs lol
+UPDATE: I actually found last-minute bugs lol
 - Cannot exit from F1 and S1 functions unless accept or reject requests
 - inputting :q! and get KeyboardInterrupted is an intended behavior. Because it's a way to skip the exit() function in [project_manage.py](project_manage.py)
 - Advisor can submit project for evaluation multiple times.
+- Members and leaders can change title everytime. Even if the project is finished
 - Project Title can be empty string. **Which is a FEATURE unique to my program, not a bug.**
+- Evaluator does not lose his role when there's no more projects to evaluate. Albeit he cannot evaluate the projects that's finished evaluating anyways.
 
 # Copyright Notice
 Graduation Project Management System.
