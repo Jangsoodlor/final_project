@@ -542,7 +542,7 @@ type exit to cancel: ')
         key_main = input('Please enter main key: ')
         val_main = input('Please enter main value: ')
         key_update = input('Please enter key that you want to update: ')
-        val_update = input('Please enter key that you want to update: ')
+        val_update = input('Please enter val that you want to update: ')
         table.update(key_main, val_main, key_update, val_update)
         print('done')
 

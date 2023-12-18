@@ -53,7 +53,7 @@ This class handles the modification of the project table. Inherits from the Cont
 |method|description|additional arguments taken|
 |------|-----------|---------------|
 |__init__|inherits from the Container class|"project" table|
-|create|creates a new project and change the role ofmember who started the project to leader|title, leader_id, login_table|
+|create|creates a new project and change the role of member who started the project to leader|title, leader_id, login_table|
 |update|update the project table with ProjectID as the main key|project_id, key_update, val_update|
 
 ## Class Evaluate
@@ -73,7 +73,7 @@ Take role, id and database. and
 - Make  
 
 # A table detailing each role and its actions
-For completion percentage, please refers to Bugs and completion percentage section.
+For completion percentage, please refers to [Bugs and completion percentage](#Bugs-and-completion-percentage) section.
 |Role|Action|Method in the main class|Which Involves these methods in these classes|
 |-|-|-|-|
 |Advisor|View Project Status|None|find_dict in Project|
@@ -97,8 +97,10 @@ For completion percentage, please refers to Bugs and completion percentage secti
 **Completion: 99%** (No docstring lol)
 I've spent three hours finding and fixing bugs. The only bugs I can think of is IndentationError. Since I run pylint after all the debuggings. But that should be almost impossible because I rigorously checked for indentation mistakes before pushing the final commit. The other thing is the way os library handles folder and may not detect a database.
 
-UPDATE: I acutally found bugs lol
+UPDATE: I actually found bugs lol
 - Cannot exit from F1 and S1 functions unless accept or reject requests
+- inputting :q! and get KeyboardInterrupted is an intended behavior. Because it's a way to skip the exit() function in [project_manage.py](project_manage.py)
+- Advisor can submit project for evaluation multiple times.
 - Project Title can be empty string. **Which is a FEATURE unique to my program, not a bug.**
 
 # Copyright Notice
