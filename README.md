@@ -69,15 +69,29 @@ Inherits from the Container class. This class handles the modification of the pr
 ## Class Main
 THE Main class. it's the class that receives inputs and send it to other classes. And sometimes modified the database directly. Further explanation is in the next section.
 
+Take role, id and database. and
+- Make  
+
 # A table detailing each role and its actions
 For completion percentage, please refers to Bugs and completion percentage section.
-|Role|Action|Method in the main class|Which Involves these functions in these classes|
+|Role|Action|Method in the main class|Which Involves these methods in these classes|
 |-|-|-|-|
 |Advisor|View Project Status|None|find_dict in Project|
-|Member, Leader|View Project Status and Requests status|__member_print|find_dict in Project <br> 
-status in Request|
-
-
+|Member, Leader|View Project Status and Requests status|__member_print|find_dict in Project, status in Request|
+|Student|become leader|__become_leader|create in Project, decide in Request|
+|Student, Faculty|accept/reject requests|__decide_request|decide in Request|
+|Leader|Send Requests to Member and Advisors|__recruit|request in Request|
+|Leader, Member|Update project title|__update_project_title|update in Project
+|Advisor|Send the project to evaluation|__send_project_for_eval|update in Projects|
+|Admin|choose evaluator|__choose_evaluator|a lot of functions in Evaluate and Project classes|
+|Evaluator|Give score|__give_score|a lot of functions in Evaluate and Project classes|
+|Advisor|View Evaluator's score|__eval_status|find_dict in Evaluator, which inherits from Container class|
+|Advisor|Give Final Approval|__give_final_approval| lot of functions in Evaluate and Project classes|
+|Admin|Insert a new dict to an existing table|__insert_new_dict_to_table|None|
+|Admin|Edit a dict in an existing table|__edit_dict_in_table|None|
+|Admin|delete a dictionary in table|__delete_dict_in_table|None|
+|Admin|Delete an entire table|__clear_table|None|
+|Admin|Reset program's state|__reset|None|
 
 # Bugs and Completion Percentage
 **Completion: 100%** (Except docstirngs lol)
