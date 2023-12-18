@@ -4,6 +4,42 @@
   - project_manage.py
   - persons.csv
 
+# Classes and Functions
+## Class Container
+This class is, like the name suggests, a container class. Which all the other classes except the main class inherited its attributes from.
+
+|method|explanation|
+|__init__|take in table object as a starting attribute|
+|get_table|returns the table object|
+|find_dict|returns the first dictionary which matches the key and value the user inputted|
+|__str__|print table|
+
+## Class Request
+This class handled requests. Inherited attributes from container.
+|method|explanation|
+
+# Files necessary to run the program:
+  - database.py
+  - project_manage.py
+  - persons.csv
+  - a database subdirectory in the program's directory. Which contains:
+    - login.csv
+    - persons.csv
+
+  additionally, the program utilizes these following libraries
+  - os
+  - csv
+  - datetime
+  - copy
+  all of which are standard python libraries.
+  
+# How to run?
+  - clone or download the project
+  - run the **project_manage.py** file.
+
+# Bugs
+I've spent three hours finding and fixing bugs. The only bugs I can think of is IndentationError. Since I run pylint after all the debuggings. But that should be almost impossible because I rigorously checked for indentation mistakes before pushing the final commit.
+
 # Copyright Notice
 Graduation Project Management System.
 Copyright (C) 2023 Jangsoodlor. All Rights Reserved.
