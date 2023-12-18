@@ -4,6 +4,18 @@
   - project_manage.py
   - persons.csv
 
+# Table of Contents
+- [Files NECESSARY to run the program](#files-necessary-to-run-the-program)
+- [HOW TO RUN?](#how-to-run)
+- [Classes and Functions](#classes-and-functions)
+  - [Container](#class-container)
+  - [Request](#class-request)
+  - [Project](#class-project)
+  - [Evaluate](#class-evaluate)
+  - [Main](#class-main)
+- [A table detailing each role and its actions](#a-table-detailing-each-role-and-its-actions)
+- [Known Bugs](#known-bugs)
+
 # Files NECESSARY to run the program:
   - database.py
   - project_manage.py
@@ -17,11 +29,12 @@
   - csv
   - datetime
   - copy
+  
   all of which are standard python libraries.
   
 # How to run?
   - clone or download the project
-  - run the **project_manage.py** file.
+  - **run the [project_manage.py](project_manage.py) file.**
 
 # Classes and Functions
 All additional classes (aside from ReadCSV, Table and Database) is in the [persons.py](persons.py) file.
@@ -69,60 +82,35 @@ Inherits from the Container class. This class handles the modification of the pr
 ## Class Main
 THE Main class. it's the class that receives inputs and send it to other classes. And sometimes modified the database directly. Further explanation is in the next section.
 
-Take role, id and database. and
-- Make  
-
 # A table detailing each role and its actions
-For completion percentage, please refers to [Bugs and completion percentage](#Bugs-and-completion-percentage) section.
-|Role|Action|Method in the main class|Which Involves these methods in these classes|
-|-|-|-|-|
-|Advisor|View Project Status|None|find_dict in Project|
-|Member, Leader|View Project Status and Requests status|__member_print|find_dict in Project, status in Request|
-|Student|become leader|__become_leader|create in Project, decide in Request|
-|Student, Faculty|accept/reject requests|__decide_request|decide in Request|
-|Leader|Send Requests to Member and Advisors|__recruit|request in Request|
-|Leader, Member|Update project title|__update_project_title|update in Project
-|Advisor|Send the project to evaluation|__send_project_for_eval|update in Projects|
-|Admin|choose evaluator|__choose_evaluator|a lot of functions in Evaluate and Project classes|
-|Evaluator|Give score|__give_score|a lot of functions in Evaluate and Project classes|
-|Advisor|View Evaluator's score|__eval_status|find_dict in Evaluator, which inherits from Container class|
-|Advisor|Give Final Approval|__give_final_approval| lot of functions in Evaluate and Project classes|
-|Admin|Insert a new dict to an existing table|__insert_new_dict_to_table|None|
-|Admin|Edit a dict in an existing table|__edit_dict_in_table|None|
-|Admin|delete a dictionary in table|__delete_dict_in_table|None|
-|Admin|Delete an entire table|__clear_table|None|
-|Admin|Reset program's state|__reset|None|
+Because of the way I design this program, all actions done by the user must goes through at least one method in the main class first the Main class first before going to other class
+|Role|Action|Method in the Main class|Which Involves these methods in these classes|Completion Percentage|
+|-|-|-|-|-|
+|Advisor|View Project Status|None|find_dict in Project|100 %|
+|Member, Leader|View Project Status and Requests status|__member_print|find_dict in Project, status in Request|100 %|
+|Student|become leader|__become_leader|create in Project, decide in Request|100 %|
+|Student, Faculty|accept/reject requests|__decide_request|decide in Request|95 %|
+|Leader|Send Requests to Member and Advisors|__recruit|request in Request|100 %|
+|Leader, Member|Update project title|__update_project_title|update in Project|100 %|
+|Advisor|Send the project to evaluation|__send_project_for_eval|update in Projects|100 %|
+|Admin|choose evaluator|__choose_evaluator|a lot of functions in Evaluate and Project classes|100 %|
+|Evaluator|Give score|__give_score|a lot of functions in Evaluate and Project classes|100 %|
+|Advisor|View Evaluator's score|__eval_status|find_dict in Evaluator, which inherits from Container class|100 %|
+|Advisor|Give Final Approval|__give_final_approval| lot of functions in Evaluate and Project classes|100 %|
+|Admin|Insert a new dict to an existing table|__insert_new_dict_to_table|None|100 %|
+|Admin|Edit a dict in an existing table|__edit_dict_in_table|None|100 %|
+|Admin|delete a dictionary in table|__delete_dict_in_table|None|100 %|
+|Admin|Delete an entire table|__clear_table|None|100 %|
+|Admin|Reset program's state|__reset|None|100 %|
 
-# Bugs and Completion Percentage
-**Completion: 99%** (everything completed except docstring lol)
-I've spent three hours finding and fixing bugs. The only bugs I can think of is IndentationError. Since I run pylint after all the debuggings. But that should be almost impossible because I rigorously checked for indentation mistakes before pushing the final commit. The other thing is the way os library handles folder and may not detect a database directory in non-Windows Operating system.
-
-UPDATE: I actually found last-minute bugs lol
-- Cannot exit from F1 and S1 functions unless accept or reject requests
-- inputting :q! and get KeyboardInterrupted is an intended behavior. Because it's a way to skip the exit() function in [project_manage.py](project_manage.py)
+# Known bugs
+These are some last-minutes bugs I found:
+- Cannot exit from __decide_request function unless accept or reject a valid requests
 - Advisor can submit project for evaluation multiple times.
 - Members and leaders can change title everytime. Even if the project is finished
-- Project Title can be empty string. **Which is a FEATURE unique to my program, not a bug.**
 - Evaluator does not lose his role when there's no more projects to evaluate. Albeit he cannot evaluate the projects that has been marked finished by the advisor anyways.
 - Leader can invite members after all members have been invited. Those invites should be automatically deleted after someone accepts an offer from other groups.
 
-# Copyright Notice
-Graduation Project Management System.
-Copyright (C) 2023 Jangsoodlor. All Rights Reserved.
-
-This program is part of 01219114/15 Computer Programming I Course
-Semester 1 Academic Year 2566 B.E. (2023 A.D.)
-Kasetsart University
-
-DO NOT copy, modify, merge, publish, distribute, sublicense, and/or sell copies of this Software.
-UNLESS you're a Kasetsart University Computer Engineering Department's Professor or Teacher Assistant.
-
-THERE IS NO WARRANTY FOR THE PROGRAM. IN NO EVENT WILL THE COPYRIGHT HOLDER BE LIABLE TO YOU FOR DAMAGES, 
-INCLUDING ANY GENERAL, SPECIAL, INCIDENTAL OR CONSEQUENTIAL DAMAGES ARISING OUT OF THE USE 
-OR INABILITY TO USE THE PROGRAM (INCLUDING BUT NOT LIMITED TO LOSS OF DATA 
-OR DATA BEING RENDERED INACCURATE OR LOSSES SUSTAINED BY YOU OR THIRD PARTIES 
-OR A FAILURE OF THE PROGRAM TO OPERATE WITH ANY OTHER PROGRAMS), 
-EVEN IF SUCH HOLDER OR OTHER PARTY HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGES.
-
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
+These are not necessarily bugs, but are kinda intended behaviors that got implemented in a weird way:
+- inputting :q! and get KeyboardInterrupted is an intended behavior. Because it's a way to skip the exit() function in [project_manage.py](project_manage.py)
+- Project Title could be set as empty string.
